@@ -1,10 +1,11 @@
-#include "Alimento.h"
-
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+
+#include "Alimento.h"
+
 
 const char *obter_nome_categoria(Categoria categoria){
     const char *nome = "Categoria invalida";

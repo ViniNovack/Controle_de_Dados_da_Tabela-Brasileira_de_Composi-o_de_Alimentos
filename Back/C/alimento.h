@@ -1,7 +1,14 @@
-#ifndef ALIMENTO_H;
-#define ALIMENTO_H;  // Ele define a constante alimento
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
 
-typedef enum{
+#ifndef ALIMENTO_H
+#define ALIMENTO_H  // Ele define a constante alimento
+
+
+typedef enum{           // Um alimento está restrito a essas categorias, quando analizado as categorias presente nas tabelas de alimentos
     CEREAIS_E_DERIVADOS,
     VERDURAS_HORTALICAS_E_DERIVADOS,
     FRUTAS_E_DERIVADOS,
@@ -25,7 +32,7 @@ typedef struct{
     float energia;
     float proteina;
     Categoria categoria;
-} Alimentos;
+} Alimento;     // Um alimento possui varias informações, por conta se torna nessesario agrupar essas infomações criando um tipo "Alimento"
 
 const char*obter_nome_categoria(Categoria categoria);
 
