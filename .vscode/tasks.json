@@ -1,4 +1,3 @@
-
 {
     "version": "2.0.0",
     "tasks": [
@@ -9,17 +8,20 @@
             "args": [
                 "-Wall",
                 "-Wextra",
+                "-std=c11",
                 "-g3",
-                "${workspaceFolder:Controle_de_Dados_da_Tabela-Brasileira_de_Composi-o_de_Alimentos}/Back/C/P1/p1.c",
-                "${workspaceFolder:Controle_de_Dados_da_Tabela-Brasileira_de_Composi-o_de_Alimentos}/Back/C/P1/P1_funcoes.c",
-                "${workspaceFolder:Controle_de_Dados_da_Tabela-Brasileira_de_Composi-o_de_Alimentos}/Back/C/alimento.c",
+                "${workspaceFolder}/Back/C/P1/p1.c",
+                "${workspaceFolder}/Back/C/P1/funcoes/P1_funcoes.c",
+                "${workspaceFolder}/Back/C/alimento.c",
                 "-o",
-                "${workspaceFolder:Controle_de_Dados_da_Tabela-Brasileira_de_Composi-o_de_Alimentos}/Back/C/P1/output/p1.exe"
+                "${workspaceFolder}/Back/C/P1/output/p1.exe"
             ],
             "options": {
-                "cwd": "${workspaceFolder:Controle_de_Dados_da_Tabela-Brasileira_de_Composi-o_de_Alimentos}/Back/C/P1"
+                "cwd": "${workspaceFolder}/Back/C/P1"
             },
-            "problemMatcher": ["$gcc"],
+            "problemMatcher": [
+                "$gcc"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
