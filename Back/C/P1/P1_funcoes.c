@@ -17,9 +17,8 @@ void converter_arquivo(void){
 
     Alimento alimento;
 
-    int quantidade = 0;
-
-    while(fgets(linha, sizeof(linha), arquivo_texto) != NULL){     // fgets(arquivo_que_vai_ser_lido, numero_de_caracteres_a_serem_lidos, arquivo_em_que_os_dados_vão_ser_gravados);
+    fgets(linha, sizeof(linha), arquivo_texto); // Essa linha se le apenas colunas
+    while(fgets(linha, sizeof(linha), arquivo_texto) != NULL){   // Essa linha se le todos os alimentos  // fgets(arquivo_que_vai_ser_lido, numero_de_caracteres_a_serem_lidos, arquivo_em_que_os_dados_vão_ser_gravados);
         if(sscanf(linha,"%d;%99[^;];%f;%f;%99[^\r\n]",
         &alimento.numero,
         alimento.descricao,
@@ -29,7 +28,6 @@ void converter_arquivo(void){
         
         if(converter_categoria(categoria_texto, &alimento.categoria)){
             fwrite(&alimento, sizeof(Alimento), 1, arquivo_binario);
-            quantidade++;
         }
         }
     }

@@ -1,0 +1,29 @@
+
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compilar Projeto P1",
+            "type": "shell",
+            "command": "gcc",
+            "args": [
+                "-Wall",
+                "-Wextra",
+                "-g3",
+                "${workspaceFolder:Controle_de_Dados_da_Tabela-Brasileira_de_Composi-o_de_Alimentos}/Back/C/P1/p1.c",
+                "${workspaceFolder:Controle_de_Dados_da_Tabela-Brasileira_de_Composi-o_de_Alimentos}/Back/C/P1/P1_funcoes.c",
+                "${workspaceFolder:Controle_de_Dados_da_Tabela-Brasileira_de_Composi-o_de_Alimentos}/Back/C/alimento.c",
+                "-o",
+                "${workspaceFolder:Controle_de_Dados_da_Tabela-Brasileira_de_Composi-o_de_Alimentos}/Back/C/P1/output/p1.exe"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder:Controle_de_Dados_da_Tabela-Brasileira_de_Composi-o_de_Alimentos}/Back/C/P1"
+            },
+            "problemMatcher": ["$gcc"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
