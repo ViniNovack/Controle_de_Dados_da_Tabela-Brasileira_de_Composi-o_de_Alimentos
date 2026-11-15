@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "P1_funcoes.h"
-#include "../alimento.h"
+#include "../../Alimento.h"
 
 
 void converter_arquivo(void){

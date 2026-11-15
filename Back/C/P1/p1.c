@@ -4,7 +4,7 @@
 #include <math.h>
 #include <string.h>
 
-#include "P1_funcoes.h"
+#include "funcoes/P1_funcoes.h"
 
 
 int main(){
