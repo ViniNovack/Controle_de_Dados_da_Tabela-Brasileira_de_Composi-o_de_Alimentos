@@ -4,8 +4,11 @@
 #include <math.h>
 #include <string.h>
 
+#include "P1_funcoes.h"
+
+
 int main(){
-    
+    converter_arquivo();  // tranforma os dados para dados.bin
 
     return 0;
 }
