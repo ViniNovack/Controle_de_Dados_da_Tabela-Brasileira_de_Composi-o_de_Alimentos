@@ -4,7 +4,7 @@
 #include <math.h>
 #include <string.h>
 
-#include "Alimento.h"
+#include "alimento.h"
 
 
 const char *obter_nome_categoria(Categoria categoria){
