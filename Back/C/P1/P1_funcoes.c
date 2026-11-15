@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "P1_funcoes.h"
-#include "../Alimento.h"
+#include "../alimento.h"
 
 
 void converter_arquivo(void){
@@ -24,12 +24,28 @@ void converter_arquivo(void){
         &alimento.numero,
         alimento.descricao,
         &alimento.energia,
-        &alimento.proteina) == 5){
+        &alimento.proteina,
+        categoria_texto) == 5){
         
-        converter_categoria(categoria_texto, &alimento.categoria);
-        fwrite(&alimento, sizeof(Alimento), 1, arquivo_binario);
-        quantidade++;
-        
+        if(converter_categoria(categoria_texto, &alimento.categoria)){
+            fwrite(&alimento, sizeof(Alimento), 1, arquivo_binario);
+            quantidade++;
+        }
         }
     }
+
+    fclose(arquivo_texto);
+    fclose(arquivo_binario);
 }
+
+// sscanf() vai interpretar as linhas seguindo as seguintes regras:
+// Parte	                        Significado	                                              Resultado
+//  %d	                       Lê um número inteiro	                                               1
+//  ;	                  Espera encontrar um ponto e vírgula	                                   ;
+// %99[^;]	            Lê até encontrar ;, limitando a 99 caracteres	              Arroz, integral, cozido
+//  ;	                        Espera encontrar ;	                                               ;
+//  %f	                       Lê um número decimal	                                              124
+//  ;	                         Espera encontrar ;	                                               ;
+//  %f	                      Lê outro número decimal	                                          2.6
+//  ;	                         Espera encontrar ;	                                               ;
+// %99[^\r\n]	         Lê até encontrar uma quebra de linha, limitando a 99 caracteres        Cereais e derivados
