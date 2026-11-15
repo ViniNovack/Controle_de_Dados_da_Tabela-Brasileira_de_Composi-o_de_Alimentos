@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Executar Projeto P1",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Back/C/P1/output/p1.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/Back/C/P1",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "gdb.exe",
+            "preLaunchTask": "Compilar Projeto P1"
+        }
+    ]
+}
