@@ -47,3 +47,14 @@ bool inserir_alimento_categoria(CategoriaNo **inicio, Alimento alimento) {
 
     return inserido;
 }
+
+void liberar_categorias(CategoriaNo *inicio) {
+    CategoriaNo *atual = inicio;
+
+    while (atual != NULL) {
+        CategoriaNo *remover = atual;
+        atual = atual->proxima;
+        liberar_alimentos(remover->alimentos);
+        free(remover);
+    }
+}

@@ -17,5 +17,6 @@ typedef struct CategoriaNo{
 } CategoriaNo;
 
 bool inserir_alimento_categoria(CategoriaNo **inicio, Alimento alimento);
+void liberar_categorias(CategoriaNo *inicio);
 
 #endif

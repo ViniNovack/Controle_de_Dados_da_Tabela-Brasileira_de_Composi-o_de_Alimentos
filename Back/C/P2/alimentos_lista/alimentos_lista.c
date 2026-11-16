@@ -34,3 +34,13 @@ bool inserir_alimento(AlimentoNo **inicio, Alimento alimento) {
 
     return inserido;
 }
+
+void liberar_alimentos(AlimentoNo *inicio) {
+    AlimentoNo *atual = inicio;
+    
+    while (atual != NULL) {
+        AlimentoNo *remover = atual;
+        atual = atual->proximo;
+        free(remover);
+    }
+}

@@ -15,5 +15,6 @@ typedef struct AlimentoNo{          // Representa um nó da lista ligada
 } AlimentoNo;
 
 bool inserir_alimento(AlimentoNo **inicio, Alimento alimento);
+void liberar_alimentos(AlimentoNo *inicio);
 
 #endif
