@@ -3,7 +3,7 @@
     "tasks": [
         {
             "label": "Compilar Projeto P1",
-            "type": "shell",
+            "type": "cppbuild",
             "command": "gcc",
             "args": [
                 "-Wall",
@@ -29,7 +29,7 @@
         },
         {
             "label": "Compilar Projeto P2",
-            "type": "shell",
+            "type": "cppbuild",
             "command": "gcc",
             "args": [
                 "-Wall",
