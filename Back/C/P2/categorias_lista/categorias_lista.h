@@ -10,7 +10,7 @@
 #include "../../alimento.h"
 #include "../alimentos_lista/alimentos_lista.h"
 
-typedef struct CatgoriaNo{
+typedef struct CategoriaNo{
     Categoria categoria;             // Identifica a categoria por meio do [enum] já existente
     AlimentoNo *alimentos;           // Aponta para o início da lista de alimentos daquela categoria
     struct CategoriaNo *proxima;     // Aponta para a próxima categoria

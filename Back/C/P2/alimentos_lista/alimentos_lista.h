@@ -14,4 +14,6 @@ typedef struct AlimentoNo{          // Representa um nó da lista ligada
     struct AlimentoNo *proximo;     // Aponta para o próximo alimento da lista
 } AlimentoNo;
 
+bool inserir_alimento(Alimento **inicio, Alimento alimento);
+
 #endif
