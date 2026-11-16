@@ -14,6 +14,20 @@
             "MIMode": "gdb",
             "miDebuggerPath": "gdb.exe",
             "preLaunchTask": "Compilar Projeto P1"
+        },
+        {
+            "name": "Executar Projeto P2",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Back/C/P2/output/p2.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/Back/C/P2",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "gdb.exe",
+            "preLaunchTask": "Compilar Projeto P2"
         }
     ]
 }

@@ -26,6 +26,32 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "Compilar Projeto P2",
+            "type": "shell",
+            "command": "gcc",
+            "args": [
+                "-Wall",
+                "-Wextra",
+                "-std=c11",
+                "-g3",
+                "${workspaceFolder}/Back/C/P2/p2.c",
+                "${workspaceFolder}/Back/C/P2/categorias_lista/categorias_lista.c",
+                "${workspaceFolder}/Back/C/P2/alimentos_lista/alimentos_lista.c",
+                "${workspaceFolder}/Back/C/P2/arvore_energia/arvore_energia.c",
+                "${workspaceFolder}/Back/C/P2/arvore_proteina/arvore_proteina.c",
+                "${workspaceFolder}/Back/C/alimento.c",
+                "-o",
+                "${workspaceFolder}/Back/C/P2/output/p2.exe"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Back/C/P2"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
         }
     ]
 }
