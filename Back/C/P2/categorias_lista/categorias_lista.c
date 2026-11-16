@@ -28,6 +28,9 @@ bool inserir_alimento_categoria(CategoriaNo **inicio, Alimento alimento) {
                 novo->alimentos = NULL;
                 novo->proxima = *posicao;
 
+                novo->arvore_energia = NULL;
+                novo->arvore_proteina = NULL;
+
                 *posicao = novo;
                 nova_categoria = true;
             }
@@ -54,7 +57,10 @@ void liberar_categorias(CategoriaNo *inicio) {
     while (atual != NULL) {
         CategoriaNo *remover = atual;
         atual = atual->proxima;
+
+        liberar_arvore_energia(remover->arvore_energia);
         liberar_alimentos(remover->alimentos);
+
         free(remover);
     }
 }
