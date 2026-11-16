@@ -16,4 +16,6 @@ typedef struct CategoriaNo{
     struct CategoriaNo *proxima;     // Aponta para a próxima categoria
 } CategoriaNo;
 
+bool inserir_alimento_categoria(CategoriaNo **inicio, Alimento alimento);
+
 #endif
