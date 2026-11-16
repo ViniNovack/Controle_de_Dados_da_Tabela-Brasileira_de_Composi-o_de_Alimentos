@@ -28,6 +28,10 @@ bool carregar_dados(CategoriaNo **categorias){
         fclose(arquivo);
     }
 
+    if (sucesso){
+        sucesso = construir_arvores(*categorias);
+    }
+
     if (!sucesso){
         liberar_categorias(*categorias);
         *categorias = NULL;

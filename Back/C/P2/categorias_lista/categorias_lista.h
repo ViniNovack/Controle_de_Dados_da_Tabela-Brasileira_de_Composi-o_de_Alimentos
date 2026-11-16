@@ -17,10 +17,12 @@ typedef struct CategoriaNo{
 
     struct ArvoreEnergiaNo *arvore_energia;
     struct ArvoreProteinaNo *arvore_proteina;
-    
+
 } CategoriaNo;
 
 bool inserir_alimento_categoria(CategoriaNo **inicio, Alimento alimento);
 void liberar_categorias(CategoriaNo *inicio);
+
+bool construir_arvores(CategoriaNo *inicio);
 
 #endif

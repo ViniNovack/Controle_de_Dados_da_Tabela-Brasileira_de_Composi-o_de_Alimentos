@@ -68,3 +68,53 @@ void liberar_categorias(CategoriaNo *inicio) {
         free(remover);
     }
 }
+
+bool construir_arvores(CategoriaNo *inicio) {
+    bool sucesso = true;
+
+    CategoriaNo *categoria_atual = inicio;
+
+    while (categoria_atual != NULL && sucesso) {
+        AlimentoNo *alimento_atual = categoria_atual->alimentos;
+
+        while (alimento_atual != NULL && sucesso) {
+            bool energia_inserida = inserir_arvore_energia(
+                &categoria_atual->arvore_energia,
+                alimento_atual
+            );
+
+            bool proteina_inserida = false;
+
+            if (energia_inserida) {
+                proteina_inserida = inserir_arvore_proteina(
+                    &categoria_atual->arvore_proteina,
+                    alimento_atual
+                );
+            }
+
+            if (!energia_inserida || !proteina_inserida) {
+                sucesso = false;
+            }
+
+            alimento_atual = alimento_atual->proximo;
+        }
+
+        categoria_atual = categoria_atual->proxima;
+    }
+
+    if (!sucesso) {
+        categoria_atual = inicio;
+
+        while (categoria_atual != NULL) {
+            liberar_arvore_energia(categoria_atual->arvore_energia);
+            liberar_arvore_proteina(categoria_atual->arvore_proteina);
+
+            categoria_atual->arvore_energia = NULL;
+            categoria_atual->arvore_proteina = NULL;
+
+            categoria_atual = categoria_atual->proxima;
+        }
+    }
+
+    return sucesso;
+}
