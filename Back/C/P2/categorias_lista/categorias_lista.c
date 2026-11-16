@@ -5,6 +5,8 @@
 #include <string.h>
 
 #include "categorias_lista.h"
+#include "../arvore_energia/arvore_energia.h"
+#include "../arvore_proteina/arvore_proteina.h"
 
 bool inserir_alimento_categoria(CategoriaNo **inicio, Alimento alimento) {
     bool inserido = false;
@@ -59,6 +61,8 @@ void liberar_categorias(CategoriaNo *inicio) {
         atual = atual->proxima;
 
         liberar_arvore_energia(remover->arvore_energia);
+        liberar_arvore_proteina(remover->arvore_proteina);
+
         liberar_alimentos(remover->alimentos);
 
         free(remover);
