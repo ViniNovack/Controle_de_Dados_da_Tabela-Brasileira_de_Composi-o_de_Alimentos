@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "categorias_lista/categorias_lista.h"
+#include "../../../Front/front.h"
 
 
 bool carregar_dados(CategoriaNo **categorias){
@@ -66,6 +67,9 @@ int main() {
         printf("Dados carregados com sucesso!\n");
         printf("Total de categorias: %zu\n", total_categorias);
         printf("Total de alimentos: %zu\n", total_alimentos);
+
+        /* Inicia a interface do usuario em terminal com o loop de opcoes */
+        executar_interface(&categorias);
     } else {
         printf("Erro ao carregar os dados.\n");
     }

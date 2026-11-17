@@ -42,6 +42,7 @@
                 "${workspaceFolder}/Back/C/P2/arvore_energia/arvore_energia.c",
                 "${workspaceFolder}/Back/C/P2/arvore_proteina/arvore_proteina.c",
                 "${workspaceFolder}/Back/C/alimento.c",
+                "${workspaceFolder}/Front/front.c",
                 "-o",
                 "${workspaceFolder}/Back/C/P2/output/p2.exe"
             ],
