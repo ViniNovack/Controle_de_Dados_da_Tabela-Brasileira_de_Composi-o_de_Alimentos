@@ -159,16 +159,16 @@ void executar_opcao_2(CategoriaNo *categorias) {
     if (categoria != NULL) {
         AlimentoNo *alimento_atual = categoria->alimentos;
         printf("\nALIMENTOS: %s\n", obter_nome_categoria(categoria->categoria));
-        printf("------------------------------------------------------------------------------\n");
-        printf("%-5s | %-50s | %-12s | %-10s\n", "NUM", "DESCRICAO", "ENERGIA", "PROTEINA");
-        printf("------------------------------------------------------------------------------\n");
+        printf("----------------------------------------------------------------------------------------------------\n");
+        printf("%-5s | %-68s | %-12s | %-10s\n", "COD", "DESCRICAO DO ALIMENTO", "ENERGIA", "PROTEINA");
+        printf("----------------------------------------------------------------------------------------------------\n");
 
         int total = 0;
         if (alimento_atual == NULL) {
             printf(" [Nenhum alimento cadastrado nesta categoria]\n");
         } else {
             while (alimento_atual != NULL) {
-                printf("%-5d | %-50.50s | %8.2f kcal | %7.2f g\n",
+                printf("%-5d | %-68s | %8.2f kcal | %7.2f g\n",
                        alimento_atual->alimento.numero,
                        alimento_atual->alimento.descricao,
                        alimento_atual->alimento.energia,
@@ -177,7 +177,7 @@ void executar_opcao_2(CategoriaNo *categorias) {
                 total++;
             }
         }
-        printf("------------------------------------------------------------------------------\n");
+        printf("----------------------------------------------------------------------------------------------------\n");
         printf("Total de alimentos listados: %d\n", total);
         pausar_tela();
     }
@@ -200,7 +200,7 @@ void listar_arvore_energia_decrescente(const ArvoreEnergiaNo *raiz, int *contado
         /* 2. Processa o no atual */
         if (raiz->alimento != NULL) {
             (*contador)++;
-            printf("%-5d | %-50.50s | %8.2f kcal | %7.2f g\n",
+            printf("%-5d | %-68s | %8.2f kcal | %7.2f g\n",
                    raiz->alimento->alimento.numero,
                    raiz->alimento->alimento.descricao,
                    raiz->energia,
@@ -230,9 +230,9 @@ void executar_opcao_3(CategoriaNo *categorias) {
 
     if (categoria != NULL) {
         printf("\nALIMENTOS POR ENERGIA (DECRESCENTE): %s\n", obter_nome_categoria(categoria->categoria));
-        printf("------------------------------------------------------------------------------\n");
-        printf("%-5s | %-50s | %-12s | %-10s\n", "NUM", "DESCRICAO", "ENERGIA", "PROTEINA");
-        printf("------------------------------------------------------------------------------\n");
+        printf("----------------------------------------------------------------------------------------------------\n");
+        printf("%-5s | %-68s | %-12s | %-10s\n", "COD", "DESCRICAO DO ALIMENTO", "ENERGIA", "PROTEINA");
+        printf("----------------------------------------------------------------------------------------------------\n");
 
         int total_exibidos = 0;
         if (categoria->arvore_energia != NULL) {
@@ -241,7 +241,7 @@ void executar_opcao_3(CategoriaNo *categorias) {
             printf(" [Nenhum alimento cadastrado nesta categoria]\n");
         }
 
-        printf("------------------------------------------------------------------------------\n");
+        printf("----------------------------------------------------------------------------------------------------\n");
         printf("Total de alimentos listados: %d\n", total_exibidos);
         pausar_tela();
     }
@@ -269,7 +269,7 @@ void exibir_arvore_proteina_decrescente(const ArvoreProteinaNo *raiz, int *conta
         /* 2. Processa o no corrente */
         if (raiz->alimento != NULL) {
             (*contador)++;
-            printf(" %3d | %-50.50s | Proteina: %6.2f g | Energia: %6.1f Kcal\n",
+            printf("%-5d | %-68s | %7.2f g   | %8.2f kcal\n",
                    raiz->alimento->alimento.numero,
                    raiz->alimento->alimento.descricao,
                    raiz->proteina,
@@ -299,9 +299,9 @@ void executar_opcao_4(CategoriaNo *categorias) {
 
     if (categoria != NULL) {
         printf("\n>> Categoria selecionada: %s\n", obter_nome_categoria(categoria->categoria));
-        printf("------------------------------------------------------------------------------\n");
-        printf(" COD | %-50.50s |  PROTEINA   |    ENERGIA   \n", "DESCRICAO DO ALIMENTO");
-        printf("------------------------------------------------------------------------------\n");
+        printf("----------------------------------------------------------------------------------------------------\n");
+        printf("%-5s | %-68s | %-10s | %-12s\n", "COD", "DESCRICAO DO ALIMENTO", "PROTEINA", "ENERGIA");
+        printf("----------------------------------------------------------------------------------------------------\n");
 
         int total_exibidos = 0;
         if (categoria->arvore_proteina != NULL) {
@@ -310,7 +310,7 @@ void executar_opcao_4(CategoriaNo *categorias) {
             printf(" [Nenhum alimento cadastrado nesta categoria]\n");
         }
 
-        printf("------------------------------------------------------------------------------\n");
+        printf("----------------------------------------------------------------------------------------------------\n");
         printf("Total de alimentos listados: %d\n", total_exibidos);
         pausar_tela();
     }
@@ -338,7 +338,7 @@ void buscar_arvore_energia_faixa(const ArvoreEnergiaNo *raiz, float valor_minimo
         if (raiz->energia >= valor_minimo && raiz->energia <= valor_maximo) {
             if (raiz->alimento != NULL) {
                 (*contador)++;
-                printf(" %3d | %-50.50s | Energia: %6.1f Kcal | Proteina: %6.2f g\n",
+                printf("%-5d | %-68s | %8.2f kcal | %7.2f g\n",
                        raiz->alimento->alimento.numero,
                        raiz->alimento->alimento.descricao,
                        raiz->energia,
@@ -391,16 +391,16 @@ void executar_opcao_5(CategoriaNo *categorias) {
 
                 printf("\n>> Categoria: %s | Faixa de Energia: [%.1f Kcal ate %.1f Kcal]\n",
                        obter_nome_categoria(categoria->categoria), valor_minimo, valor_maximo);
-                printf("------------------------------------------------------------------------------\n");
-                printf(" COD | %-50.50s |    ENERGIA   |  PROTEINA   \n", "DESCRICAO DO ALIMENTO");
-                printf("------------------------------------------------------------------------------\n");
+                printf("----------------------------------------------------------------------------------------------------\n");
+                printf("%-5s | %-68s | %-12s | %-10s\n", "COD", "DESCRICAO DO ALIMENTO", "ENERGIA", "PROTEINA");
+                printf("----------------------------------------------------------------------------------------------------\n");
 
                 int total_encontrados = 0;
                 if (categoria->arvore_energia != NULL) {
                     buscar_arvore_energia_faixa(categoria->arvore_energia, valor_minimo, valor_maximo, &total_encontrados);
                 }
 
-                printf("------------------------------------------------------------------------------\n");
+                printf("----------------------------------------------------------------------------------------------------\n");
                 printf("Total de alimentos encontrados na faixa: %d\n", total_encontrados);
                 pausar_tela();
             } else {
@@ -436,7 +436,7 @@ void buscar_arvore_proteina_faixa(const ArvoreProteinaNo *raiz, float valor_mini
         if (raiz->proteina >= valor_minimo && raiz->proteina <= valor_maximo) {
             if (raiz->alimento != NULL) {
                 (*contador)++;
-                printf(" %3d | %-50.50s | Proteina: %6.2f g | Energia: %6.1f Kcal\n",
+                printf("%-5d | %-68s | %7.2f g   | %8.2f kcal\n",
                        raiz->alimento->alimento.numero,
                        raiz->alimento->alimento.descricao,
                        raiz->proteina,
@@ -489,16 +489,16 @@ void executar_opcao_6(CategoriaNo *categorias) {
 
                 printf("\n>> Categoria: %s | Faixa de Proteina: [%.2f g ate %.2f g]\n",
                        obter_nome_categoria(categoria->categoria), valor_minimo, valor_maximo);
-                printf("------------------------------------------------------------------------------\n");
-                printf(" COD | %-50.50s |  PROTEINA   |    ENERGIA   \n", "DESCRICAO DO ALIMENTO");
-                printf("------------------------------------------------------------------------------\n");
+                printf("----------------------------------------------------------------------------------------------------\n");
+                printf("%-5s | %-68s | %-10s | %-12s\n", "COD", "DESCRICAO DO ALIMENTO", "PROTEINA", "ENERGIA");
+                printf("----------------------------------------------------------------------------------------------------\n");
 
                 int total_encontrados = 0;
                 if (categoria->arvore_proteina != NULL) {
                     buscar_arvore_proteina_faixa(categoria->arvore_proteina, valor_minimo, valor_maximo, &total_encontrados);
                 }
 
-                printf("------------------------------------------------------------------------------\n");
+                printf("----------------------------------------------------------------------------------------------------\n");
                 printf("Total de alimentos encontrados na faixa: %d\n", total_encontrados);
                 pausar_tela();
             } else {
@@ -729,15 +729,19 @@ void executar_opcao_8(CategoriaNo **categorias, bool *dados_modificados) {
             pausar_tela();
         } else {
             printf("\n--- ALIMENTOS DA CATEGORIA '%s' ---\n", obter_nome_categoria(categoria->categoria));
+            printf("----------------------------------------------------------------------------------------------------\n");
+            printf("%-5s | %-68s | %-12s | %-10s\n", "COD", "DESCRICAO DO ALIMENTO", "ENERGIA", "PROTEINA");
+            printf("----------------------------------------------------------------------------------------------------\n");
             AlimentoNo *atual = categoria->alimentos;
             while (atual != NULL) {
-                printf(" COD: %3d | %-50.50s | %.1f kcal | %.2f g\n",
+                printf("%-5d | %-68s | %8.2f kcal | %7.2f g\n",
                        atual->alimento.numero,
                        atual->alimento.descricao,
                        atual->alimento.energia,
                        atual->alimento.proteina);
                 atual = atual->proximo;
             }
+            printf("----------------------------------------------------------------------------------------------------\n");
 
             printf("\nDigite o CODIGO (numero) do alimento que deseja remover: ");
             int codigo_alimento = 0;
@@ -805,10 +809,11 @@ void executar_opcao_9(CategoriaNo *categorias, bool dados_modificados, bool *exe
  */
 void executar_interface(CategoriaNo **categorias) {
 #ifdef _WIN32
-    if (_isatty(_fileno(stdout))) {
-        SetConsoleOutputCP(65001);
-    }
+    /* Configura o console do Windows para UTF-8 (Code Page 65001) para acentuacao perfeita */
+    SetConsoleOutputCP(65001);
+    SetConsoleCP(65001);
 #endif
+    setlocale(LC_ALL, "");
 
     bool executando = true;
     bool dados_modificados = false;
