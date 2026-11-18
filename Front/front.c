@@ -444,25 +444,282 @@ void executar_opcao_3(CategoriaNo *categorias) {
 
 /*
  * ============================================================================
- * ESQUELETOS DAS DEMAIS OPCOES DO TRABALHO
+ * IMPLEMENTACAO DAS OPCOES 7, 8 e 9 E FUNCOES AUXILIARES
  * ============================================================================
  */
 
-void executar_opcao_7(CategoriaNo **categorias) {
-    (void)categorias;
-    printf("\n[OPCAO 7] Remover uma categoria de alimentos.\n");
-    printf("(Funcionalidade em desenvolvimento)\n");
+/*
+ * Funcao: remover_categoria_da_lista
+ * Objetivo: Remove um no de categoria da lista simplesmente encadeada de categorias,
+ *           liberando toda a memoria alocada para sua lista de alimentos e suas
+ *           duas arvores binarias de indexacao (energia e proteina).
+ * Retorno: true se a categoria foi encontrada e removida, false caso contrario.
+ */
+bool remover_categoria_da_lista(CategoriaNo **inicio, Categoria categoria_alvo) {
+    bool removido = false;
+
+    if (inicio != NULL && *inicio != NULL) {
+        CategoriaNo *anterior = NULL;
+        CategoriaNo *atual = *inicio;
+
+        while (atual != NULL && atual->categoria != categoria_alvo) {
+            anterior = atual;
+            atual = atual->proxima;
+        }
+
+        if (atual != NULL) {
+            if (anterior == NULL) {
+                *inicio = atual->proxima;
+            } else {
+                anterior->proxima = atual->proxima;
+            }
+
+            /* Libera todos os recursos alocados para esta categoria */
+            liberar_arvore_energia(atual->arvore_energia);
+            liberar_arvore_proteina(atual->arvore_proteina);
+            liberar_alimentos(atual->alimentos);
+            free(atual);
+
+            removido = true;
+        }
+    }
+
+    return removido;
 }
 
-void executar_opcao_8(CategoriaNo **categorias) {
-    (void)categorias;
-    printf("\n[OPCAO 8] Remover um alimento especifico (atualizando as arvores).\n");
-    printf("(Funcionalidade em desenvolvimento)\n");
+/*
+ * Funcao: remover_alimento_da_lista
+ * Objetivo: Remove um no de alimento da lista simplesmente encadeada de alimentos
+ *           de uma categoria com base no seu codigo numerico.
+ * Retorno: true se o alimento foi encontrado e removido, false caso contrario.
+ */
+bool remover_alimento_da_lista(AlimentoNo **inicio, int numero_alimento) {
+    bool removido = false;
+
+    if (inicio != NULL && *inicio != NULL) {
+        AlimentoNo *anterior = NULL;
+        AlimentoNo *atual = *inicio;
+
+        while (atual != NULL && atual->alimento.numero != numero_alimento) {
+            anterior = atual;
+            atual = atual->proximo;
+        }
+
+        if (atual != NULL) {
+            if (anterior == NULL) {
+                *inicio = atual->proximo;
+            } else {
+                anterior->proximo = atual->proximo;
+            }
+
+            free(atual);
+            removido = true;
+        }
+    }
+
+    return removido;
 }
 
-void executar_opcao_9(CategoriaNo *categorias, bool *executando) {
-    (void)categorias;
-    printf("\n[OPCAO 9] Encerrando o programa e gerando versao atualizada de dados.bin caso necessario...\n");
+/*
+ * Funcao: reconstruir_arvores_categoria
+ * Objetivo: Atualiza as arvores binarias de indexacao (energia e proteina) de uma
+ *           determinada categoria apos a remocao de um alimento, liberando as
+ *           arvores antigas e reconstruindo novas arvores a partir da lista
+ *           encadeada atualizada de alimentos.
+ * Retorno: true se a reconstrucao foi bem-sucedida, false em caso de falha de alocacao.
+ */
+bool reconstruir_arvores_categoria(CategoriaNo *categoria) {
+    bool sucesso = true;
+
+    if (categoria != NULL) {
+        /* Libera as arvores anteriores */
+        liberar_arvore_energia(categoria->arvore_energia);
+        liberar_arvore_proteina(categoria->arvore_proteina);
+        categoria->arvore_energia = NULL;
+        categoria->arvore_proteina = NULL;
+
+        AlimentoNo *alimento_atual = categoria->alimentos;
+
+        while (alimento_atual != NULL && sucesso) {
+            bool energia_inserida = inserir_arvore_energia(&categoria->arvore_energia, alimento_atual);
+            bool proteina_inserida = false;
+
+            if (energia_inserida) {
+                proteina_inserida = inserir_arvore_proteina(&categoria->arvore_proteina, alimento_atual);
+            }
+
+            if (!energia_inserida || !proteina_inserida) {
+                sucesso = false;
+            }
+
+            alimento_atual = alimento_atual->proximo;
+        }
+    }
+
+    return sucesso;
+}
+
+/*
+ * Funcao: salvar_dados_binario
+ * Objetivo: Grava todos os alimentos atualmente em memoria em formato binario
+ *           no arquivo especificado (dados.bin).
+ * Retorno: true em caso de sucesso na gravacao, false caso ocorra falha de I/O.
+ */
+bool salvar_dados_binario(CategoriaNo *categorias, const char *caminho_arquivo) {
+    bool sucesso = true;
+    FILE *arquivo = fopen(caminho_arquivo, "wb");
+
+    if (arquivo == NULL) {
+        sucesso = false;
+    } else {
+        CategoriaNo *categoria_atual = categorias;
+
+        while (categoria_atual != NULL && sucesso) {
+            AlimentoNo *alimento_atual = categoria_atual->alimentos;
+
+            while (alimento_atual != NULL && sucesso) {
+                if (fwrite(&alimento_atual->alimento, sizeof(Alimento), 1, arquivo) != 1) {
+                    sucesso = false;
+                }
+                alimento_atual = alimento_atual->proximo;
+            }
+
+            categoria_atual = categoria_atual->proxima;
+        }
+
+        fclose(arquivo);
+    }
+
+    return sucesso;
+}
+
+/*
+ * Funcao: executar_opcao_7
+ * Objetivo: Cumpre o requisito C.c.7 do trabalho:
+ *           "Remova uma categoria de alimentos."
+ */
+void executar_opcao_7(CategoriaNo **categorias, bool *dados_modificados) {
+    printf("\n==============================================================================\n");
+    printf(" OPCAO 7: Remover uma categoria de alimentos\n");
+    printf("==============================================================================\n");
+
+    CategoriaNo *categoria = selecionar_categoria(*categorias);
+
+    if (categoria != NULL) {
+        Categoria categoria_alvo = categoria->categoria;
+        char nome_categoria[100];
+        strncpy(nome_categoria, obter_nome_categoria(categoria_alvo), sizeof(nome_categoria) - 1);
+        nome_categoria[sizeof(nome_categoria) - 1] = '\0';
+
+        printf("\nATENCAO: Todos os alimentos pertencentes a '%s' tambem serao removidos!\n", nome_categoria);
+        printf("Confirmar remocao? (1 - Sim / 2 - Nao): ");
+
+        int confirmacao = 0;
+        if (scanf(" %d", &confirmacao) == 1) {
+            limpar_buffer_teclado();
+
+            if (confirmacao == 1) {
+                bool removido = remover_categoria_da_lista(categorias, categoria_alvo);
+                if (removido) {
+                    *dados_modificados = true;
+                    printf("\n[SUCESSO] Categoria '%s' e todos os seus alimentos foram removidos com sucesso!\n", nome_categoria);
+                } else {
+                    printf("\n[ERRO] Falha ao remover a categoria.\n");
+                }
+            } else {
+                printf("\n[INFO] Operacao de remocao cancelada pelo usuario.\n");
+            }
+        } else {
+            limpar_buffer_teclado();
+            printf("\n[ERRO] Opcao invalida. Operacao cancelada.\n");
+        }
+    }
+}
+
+/*
+ * Funcao: executar_opcao_8
+ * Objetivo: Cumpre o requisito C.c.8 do trabalho:
+ *           "Remova um alimento especifico. (Essa operacao implica na atualizacao
+ *            das arvores binarias de indexacao da correspondente categoria.
+ *            Essa atualizacao pode ser feita por meio da criacao novas arvores.)"
+ */
+void executar_opcao_8(CategoriaNo **categorias, bool *dados_modificados) {
+    printf("\n==============================================================================\n");
+    printf(" OPCAO 8: Remover um alimento especifico (atualizando as arvores)\n");
+    printf("==============================================================================\n");
+
+    CategoriaNo *categoria = selecionar_categoria(*categorias);
+
+    if (categoria != NULL) {
+        if (categoria->alimentos == NULL) {
+            printf("\n[AVISO] A categoria '%s' nao possui alimentos cadastrados.\n", obter_nome_categoria(categoria->categoria));
+        } else {
+            printf("\n--- ALIMENTOS DA CATEGORIA '%s' ---\n", obter_nome_categoria(categoria->categoria));
+            AlimentoNo *atual = categoria->alimentos;
+            while (atual != NULL) {
+                printf(" COD: %3d | %-50.50s | %.1f kcal | %.2f g\n",
+                       atual->alimento.numero,
+                       atual->alimento.descricao,
+                       atual->alimento.energia,
+                       atual->alimento.proteina);
+                atual = atual->proximo;
+            }
+
+            printf("\nDigite o CODIGO (numero) do alimento que deseja remover: ");
+            int codigo_alimento = 0;
+            if (scanf(" %d", &codigo_alimento) == 1) {
+                limpar_buffer_teclado();
+
+                bool removido = remover_alimento_da_lista(&categoria->alimentos, codigo_alimento);
+
+                if (removido) {
+                    bool arvores_ok = reconstruir_arvores_categoria(categoria);
+                    *dados_modificados = true;
+
+                    if (arvores_ok) {
+                        printf("\n[SUCESSO] Alimento (Cod: %d) removido e arvores binarias atualizadas com sucesso!\n", codigo_alimento);
+                    } else {
+                        printf("\n[AVISO] Alimento removido, mas ocorreu uma falha ao reconstruir as arvores binarias.\n");
+                    }
+                } else {
+                    printf("\n[ERRO] Nenhum alimento com o codigo %d foi encontrado nesta categoria.\n", codigo_alimento);
+                }
+            } else {
+                limpar_buffer_teclado();
+                printf("\n[ERRO] Codigo invalido. Operacao cancelada.\n");
+            }
+        }
+    }
+}
+
+/*
+ * Funcao: executar_opcao_9
+ * Objetivo: Cumpre o requisito C.c.9 do trabalho:
+ *           "Encerre o programa, fazendo com que uma versao atualizada do arquivo
+ *            dados.bin seja gerada caso alguma categoria ou algum alimento
+ *            tenha sido removido."
+ */
+void executar_opcao_9(CategoriaNo *categorias, bool dados_modificados, bool *executando) {
+    printf("\n==============================================================================\n");
+    printf(" OPCAO 9: Encerrar o programa\n");
+    printf("==============================================================================\n");
+
+    if (dados_modificados) {
+        printf("[INFO] Foram detectadas alteracoes nos dados em memoria.\n");
+        printf("Atualizando o arquivo '../../Dados/dados.bin'...\n");
+
+        bool sucesso = salvar_dados_binario(categorias, "../../Dados/dados.bin");
+
+        if (sucesso) {
+            printf("[SUCESSO] Versao atualizada do arquivo 'dados.bin' foi gravada com sucesso!\n");
+        } else {
+            printf("[ERRO] Nao foi possivel gravar o arquivo 'dados.bin'.\n");
+        }
+    } else {
+        printf("[INFO] Nenhuma alteracao foi realizada durante a execucao.\n");
+        printf("[INFO] O arquivo 'dados.bin' foi mantido inalterado.\n");
+    }
+
     *executando = false;
 }
 
@@ -479,6 +736,7 @@ void executar_interface(CategoriaNo **categorias) {
 #endif
 
     bool executando = true;
+    bool dados_modificados = false;
 
     /*
      * Laco de repeticao controlado estritamente por condicao booleana (executando),
@@ -520,11 +778,11 @@ void executar_interface(CategoriaNo **categorias) {
             } else if (opcao == 6) {
                 executar_opcao_6(*categorias);
             } else if (opcao == 7) {
-                executar_opcao_7(categorias);
+                executar_opcao_7(categorias, &dados_modificados);
             } else if (opcao == 8) {
-                executar_opcao_8(categorias);
+                executar_opcao_8(categorias, &dados_modificados);
             } else if (opcao == 9) {
-                executar_opcao_9(*categorias, &executando);
+                executar_opcao_9(*categorias, dados_modificados, &executando);
             } else {
                 printf("\n[ERRO] Opcao invalida! Digite um valor entre 1 e 9.\n");
             }

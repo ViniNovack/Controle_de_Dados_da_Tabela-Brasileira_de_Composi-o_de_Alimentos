@@ -51,8 +51,14 @@ void buscar_arvore_proteina_faixa(const ArvoreProteinaNo *raiz, float valor_mini
 /*
  * Opcoes 7, 8 e 9: Remocoes e encerramento
  */
-void executar_opcao_7(CategoriaNo **categorias);
-void executar_opcao_8(CategoriaNo **categorias);
-void executar_opcao_9(CategoriaNo *categorias, bool *executando);
+void executar_opcao_7(CategoriaNo **categorias, bool *dados_modificados);
+void executar_opcao_8(CategoriaNo **categorias, bool *dados_modificados);
+void executar_opcao_9(CategoriaNo *categorias, bool dados_modificados, bool *executando);
+
+/* Funcoes auxiliares para remocao, reconstrucao de arvores e persistencia */
+bool remover_categoria_da_lista(CategoriaNo **inicio, Categoria categoria_alvo);
+bool remover_alimento_da_lista(AlimentoNo **inicio, int numero_alimento);
+bool reconstruir_arvores_categoria(CategoriaNo *categoria);
+bool salvar_dados_binario(CategoriaNo *categorias, const char *caminho_arquivo);
 
 #endif /* FRONT_H */
