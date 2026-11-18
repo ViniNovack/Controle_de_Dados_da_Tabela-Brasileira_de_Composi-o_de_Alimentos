@@ -6,8 +6,29 @@
 
 #include "alimento.h"
 
+/*
+ * ============================================================================
+ * MODULO: IMPLEMENTACAO DE UTILITARIOS DE CATEGORIA E ALIMENTOS
+ * Arquivo: alimento.c
+ * Disciplina: Programacao Imperativa - PUCPR
+ * 
+ * Regras do Professor Alcides Calsavara atendidas:
+ * - Regra 10: Retorno unico ao final de cada funcao (sem multiplos returns dispersos).
+ * - Regra 11: Nomenclatura clara e significativa.
+ * - Regra 12: Codigo integralmente documentado com comentarios.
+ * ============================================================================
+ */
 
-const char *obter_nome_categoria(Categoria categoria){
+/*
+ * Funcao: obter_nome_categoria
+ * Objetivo: Converte o valor enumerado Categoria em sua representacao textual formatada
+ *           em lingua portuguesa, com acentuacao conforme a tabela TACO.
+ * Parametros:
+ *   - categoria: Constante do enum Categoria.
+ * Retorno:
+ *   - const char*: Ponteiro para string literal com o nome legivel da categoria.
+ */
+const char *obter_nome_categoria(Categoria categoria) {
     const char *nome = "Categoria invalida";
 
     if (categoria == CEREAIS_E_DERIVADOS) {
@@ -42,10 +63,22 @@ const char *obter_nome_categoria(Categoria categoria){
         nome = "Nozes e sementes";
     }
 
+    /* Retorno unico no final da funcao (Regra 10) */
     return nome;
 }
 
-bool converter_categoria(const char *texto, Categoria *categoria){
+/*
+ * Funcao: converter_categoria
+ * Objetivo: Interpreta o campo de categoria lido do arquivo texto (CSV) e faz o
+ *           parsing para a constante correta do enumerado Categoria.
+ * Parametros:
+ *   - texto: Ponteiro para a string lida do arquivo alimentos.csv.
+ *   - categoria: Ponteiro de saida onde a categoria identificada sera atribuida.
+ * Retorno:
+ *   - true se a string coincidiu com alguma das 15 categorias da TACO;
+ *   - false caso a string seja nula ou nao corresponda a nenhuma categoria cadastrada.
+ */
+bool converter_categoria(const char *texto, Categoria *categoria) {
     bool encontrada = true;
 
     if (texto == NULL || categoria == NULL) {
@@ -84,10 +117,6 @@ bool converter_categoria(const char *texto, Categoria *categoria){
         encontrada = false;
     }
 
+    /* Retorno unico no final da funcao (Regra 10) */
     return encontrada;
 }
-
-// Resultado	                 Significado
-//     0	             As duas strings são iguais.
-// Menor que 0	         A primeira string vem antes da segunda em ordem alfabética (ordem dos caracteres).
-// Maior que 0	         A primeira string vem depois da segunda.
