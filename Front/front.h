@@ -31,6 +31,7 @@ CategoriaNo* selecionar_categoria(CategoriaNo *inicio_categorias);
 void executar_opcao_1(CategoriaNo *categorias);
 void executar_opcao_2(CategoriaNo *categorias);
 void executar_opcao_3(CategoriaNo *categorias);
+void listar_arvore_energia_decrescente(const ArvoreEnergiaNo *raiz);
 
 /*
  * Opcoes 4, 5 e 6: Consultas com arvores binarias de proteina e energia

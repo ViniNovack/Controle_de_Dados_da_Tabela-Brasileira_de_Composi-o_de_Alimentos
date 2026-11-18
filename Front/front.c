@@ -1,7 +1,9 @@
 #include "front.h"
+#include <locale.h>
 
 #ifdef _WIN32
 #include <windows.h>
+#include <io.h>
 #endif
 
 /*
@@ -54,7 +56,7 @@ CategoriaNo* selecionar_categoria(CategoriaNo *inicio_categorias) {
 
         int opcao_escolhida = 0;
         printf("Digite o numero da categoria desejada (1 a %d): ", indice - 1);
-        if (scanf("%d", &opcao_escolhida) == 1) {
+        if (scanf(" %d", &opcao_escolhida) == 1) {
             limpar_buffer_teclado();
 
             /* Localiza o no correspondente ao indice informado */
@@ -203,11 +205,11 @@ void executar_opcao_5(CategoriaNo *categorias) {
         float valor_maximo = 0.0f;
 
         printf("\nInforme o valor MINIMO de energia (em Kcal): ");
-        if (scanf("%f", &valor_minimo) == 1) {
+        if (scanf(" %f", &valor_minimo) == 1) {
             limpar_buffer_teclado();
 
             printf("Informe o valor MAXIMO de energia (em Kcal): ");
-            if (scanf("%f", &valor_maximo) == 1) {
+            if (scanf(" %f", &valor_maximo) == 1) {
                 limpar_buffer_teclado();
 
                 /* Ajusta limites caso o usuario tenha digitado em ordem invertida */
@@ -299,11 +301,11 @@ void executar_opcao_6(CategoriaNo *categorias) {
         float valor_maximo = 0.0f;
 
         printf("\nInforme o valor MINIMO de proteina (em gramas): ");
-        if (scanf("%f", &valor_minimo) == 1) {
+        if (scanf(" %f", &valor_minimo) == 1) {
             limpar_buffer_teclado();
 
             printf("Informe o valor MAXIMO de proteina (em gramas): ");
-            if (scanf("%f", &valor_maximo) == 1) {
+            if (scanf(" %f", &valor_maximo) == 1) {
                 limpar_buffer_teclado();
 
                 /* Ajusta limites caso invertidos */
@@ -341,27 +343,110 @@ void executar_opcao_6(CategoriaNo *categorias) {
 
 /*
  * ============================================================================
- * ESQUELETOS DAS DEMAIS OPCOES DO TRABALHO
+ * IMPLEMENTACAO DAS OPCOES 1, 2 e 3
  * ============================================================================
  */
 
+/*
+ * Funcao: executar_opcao_1
+ * Objetivo: Cumpre o requisito C.c.1 do trabalho:
+ *           "Liste todas as categorias de alimentos na ordem constante na lista Categorias."
+ */
 void executar_opcao_1(CategoriaNo *categorias) {
-    (void)categorias;
-    printf("\n[OPCAO 1] Listar todas as categorias na ordem constante na lista Categorias.\n");
-    printf("(Funcionalidade em desenvolvimento)\n");
+    CategoriaNo *atual = categorias;
+    int contador = 1;
+
+    printf("\n==============================================================================\n");
+    printf(" OPCAO 1: Listar todas as categorias de alimentos\n");
+    printf("==============================================================================\n");
+    while (atual != NULL) {
+        printf(" %2d. %s\n", contador, obter_nome_categoria(atual->categoria));
+        atual = atual->proxima;
+        contador++;
+    }
+    printf("------------------------------------------------------------------------------\n");
+    printf("Total de categorias: %d\n", contador - 1);
 }
 
+/*
+ * Funcao: executar_opcao_2
+ * Objetivo: Cumpre o requisito C.c.2 do trabalho:
+ *           "Liste todos os alimentos de certa categoria na ordem constante na lista de alimentos dessa categoria."
+ */
 void executar_opcao_2(CategoriaNo *categorias) {
-    (void)categorias;
-    printf("\n[OPCAO 2] Listar todos os alimentos de certa categoria na ordem da lista.\n");
-    printf("(Funcionalidade em desenvolvimento)\n");
+    printf("\n==============================================================================\n");
+    printf(" OPCAO 2: Listar alimentos de certa categoria em ordem alfabetica\n");
+    printf("==============================================================================\n");
+
+    CategoriaNo *categoria = selecionar_categoria(categorias);
+
+    if (categoria != NULL) {
+        AlimentoNo *alimento_atual = categoria->alimentos;
+        printf("\nALIMENTOS: %s\n", obter_nome_categoria(categoria->categoria));
+        printf("------------------------------------------------------------------------------\n");
+        printf("%-5s | %-50s | %-12s | %-10s\n", "NUM", "DESCRICAO", "ENERGIA", "PROTEINA");
+        printf("------------------------------------------------------------------------------\n");
+        int total = 0;
+        while (alimento_atual != NULL) {
+            printf("%-5d | %-50.50s | %8.2f kcal | %7.2f g\n",
+                   alimento_atual->alimento.numero,
+                   alimento_atual->alimento.descricao,
+                   alimento_atual->alimento.energia,
+                   alimento_atual->alimento.proteina);
+            alimento_atual = alimento_atual->proximo;
+            total++;
+        }
+        printf("------------------------------------------------------------------------------\n");
+        printf("Total de alimentos: %d\n", total);
+    }
 }
 
-void executar_opcao_3(CategoriaNo *categorias) {
-    (void)categorias;
-    printf("\n[OPCAO 3] Listar alimentos de certa categoria em ordem decrescente de energia (Arvore).\n");
-    printf("(Funcionalidade em desenvolvimento)\n");
+/*
+ * Funcao: listar_arvore_energia_decrescente
+ * Objetivo: Realiza o percurso decrescente na arvore binaria de energia (Direita -> Raiz -> Esquerda).
+ */
+void listar_arvore_energia_decrescente(const ArvoreEnergiaNo *raiz) {
+    if (raiz != NULL) {
+        listar_arvore_energia_decrescente(raiz->direita);
+        if (raiz->alimento != NULL) {
+            printf("%-5d | %-50.50s | %8.2f kcal | %7.2f g\n",
+                   raiz->alimento->alimento.numero,
+                   raiz->alimento->alimento.descricao,
+                   raiz->energia,
+                   raiz->alimento->alimento.proteina);
+        }
+        listar_arvore_energia_decrescente(raiz->esquerda);
+    }
 }
+
+/*
+ * Funcao: executar_opcao_3
+ * Objetivo: Cumpre o requisito C.c.3 do trabalho:
+ *           "Liste todos os alimentos de certa categoria em ordem decrescente
+ *            com respeito a energia (em Kcal) dos alimentos. (Arvore)"
+ */
+void executar_opcao_3(CategoriaNo *categorias) {
+    printf("\n==============================================================================\n");
+    printf(" OPCAO 3: Listar alimentos de certa categoria por energia decrescente (Arvore)\n");
+    printf("==============================================================================\n");
+
+    CategoriaNo *categoria = selecionar_categoria(categorias);
+
+    if (categoria != NULL) {
+        printf("\nALIMENTOS POR ENERGIA (DECRESCENTE): %s\n", obter_nome_categoria(categoria->categoria));
+        printf("------------------------------------------------------------------------------\n");
+        printf("%-5s | %-50s | %-12s | %-10s\n", "NUM", "DESCRICAO", "ENERGIA", "PROTEINA");
+        printf("------------------------------------------------------------------------------\n");
+        listar_arvore_energia_decrescente(categoria->arvore_energia);
+        printf("------------------------------------------------------------------------------\n");
+    }
+}
+
+/*
+ * ============================================================================
+ * ESQUELETOS DAS DEMAIS OPCOES DO TRABALHO
+ * ============================================================================
+ */
 
 void executar_opcao_7(CategoriaNo **categorias) {
     (void)categorias;
@@ -388,9 +473,9 @@ void executar_opcao_9(CategoriaNo *categorias, bool *executando) {
  */
 void executar_interface(CategoriaNo **categorias) {
 #ifdef _WIN32
-    /* Configura o terminal do Windows para UTF-8 (Code Page 65001) para exibir acentos corretamente */
-    SetConsoleOutputCP(65001);
-    SetConsoleCP(65001);
+    if (_isatty(_fileno(stdout))) {
+        SetConsoleOutputCP(65001);
+    }
 #endif
 
     bool executando = true;
@@ -418,7 +503,8 @@ void executar_interface(CategoriaNo **categorias) {
         printf("Escolha uma opcao (1 a 9): ");
 
         int opcao = 0;
-        if (scanf("%d", &opcao) == 1) {
+        int status_leitura = scanf(" %d", &opcao);
+        if (status_leitura == 1) {
             limpar_buffer_teclado();
 
             if (opcao == 1) {
@@ -443,8 +529,12 @@ void executar_interface(CategoriaNo **categorias) {
                 printf("\n[ERRO] Opcao invalida! Digite um valor entre 1 e 9.\n");
             }
         } else {
-            limpar_buffer_teclado();
-            printf("\n[ERRO] Entrada invalida! Por favor, digite um numero.\n");
+            if (status_leitura == EOF) {
+                executando = false;
+            } else {
+                limpar_buffer_teclado();
+                printf("\n[ERRO] Entrada invalida! Por favor, digite um numero.\n");
+            }
         }
     }
 
