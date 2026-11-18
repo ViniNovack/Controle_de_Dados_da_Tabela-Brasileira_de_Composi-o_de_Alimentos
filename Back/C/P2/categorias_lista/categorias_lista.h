@@ -24,5 +24,6 @@ bool inserir_alimento_categoria(CategoriaNo **inicio, Alimento alimento);
 void liberar_categorias(CategoriaNo *inicio);
 
 bool construir_arvores(CategoriaNo *inicio);
+bool carregar_dados_binario(CategoriaNo **categorias, const char *caminho_arquivo);
 
 #endif

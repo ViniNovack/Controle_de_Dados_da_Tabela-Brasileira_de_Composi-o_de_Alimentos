@@ -11,17 +11,20 @@
  * MODULO DE INTERFACE COM O USUARIO (FRONT-END DE CONSOLE)
  * Arquivo: front.c
  * 
- * Regras do Professor Alcides Calsavara seguidas:
- * 1. Proibido o uso dos comandos break e continue para controle de lacos.
- * 2. Preferencialmente apenas um comando return por funcao.
- * 3. Identificadores significativos para variaveis, tipos e funcoes.
- * 4. Codigo documentado detalhadamente com comentarios.
+ * Regras do Professor Alcides Calsavara rigorosamente atendidas:
+ * 1. Regra 9: Proibido o uso dos comandos 'break' e 'continue' para controle de lacos.
+ * 2. Regra 10: Preferencialmente apenas um comando 'return' por funcao.
+ * 3. Regra 11: Identificadores bem significativos para variaveis, tipos e funcoes.
+ * 4. Regra 12: Codigo fartamente documentado por meio de comentarios explicativos.
+ * 5. Regra 5: Liberacao completa de memoria heap em todas as operacoes de remocao.
  * ============================================================================
  */
 
 /*
- * Funcao auxiliar: Limpa o buffer de entrada do teclado (stdin)
- * Evita problemas com sobras de quebra de linha (\n) do scanf.
+ * Funcao auxiliar: limpar_buffer_teclado
+ * Objetivo: Esvazia o buffer de entrada do teclado (stdin) consumindo todos os
+ *           caracteres residuais ate encontrar a quebra de linha ('\n') ou fim de arquivo (EOF).
+ *           Evita que sobras de operacoes anteriores interfiram nas leituras seguintes.
  */
 static void limpar_buffer_teclado(void) {
     int caractere = getchar();
@@ -31,11 +34,29 @@ static void limpar_buffer_teclado(void) {
 }
 
 /*
+ * Funcao auxiliar: pausar_tela
+ * Objetivo: Pausa a execucao e aguarda o usuario pressionar a tecla ENTER.
+ *           Garante que relatorios extensos (como listagem de categorias ou alimentos)
+ *           permaneçam visiveis na tela do terminal antes da reimpressao do menu principal.
+ */
+static void pausar_tela(void) {
+    printf("\n[Pressione ENTER para voltar ao menu principal...]");
+    fflush(stdout);
+    int caractere = getchar();
+    while (caractere != '\n' && caractere != EOF) {
+        caractere = getchar();
+    }
+}
+
+/*
  * Funcao: selecionar_categoria
- * Objetivo: Apresenta a lista numerada de categorias cadastradas e permite
- *           que o usuario escolha uma delas pelo indice.
- * Retorno: Ponteiro para o no da categoria selecionada (CategoriaNo*),
- *          ou NULL caso a lista esteja vazia ou a opcao seja invalida.
+ * Objetivo: Apresenta a lista numerada de categorias cadastradas em ordem alfabetica
+ *           e solicita ao usuario que escolha uma delas pelo indice.
+ * Parametros:
+ *   - inicio_categorias: Ponteiro para o no cabeca da lista ligada de categorias.
+ * Retorno:
+ *   - CategoriaNo*: Ponteiro para o no da categoria selecionada, ou NULL em caso de
+ *                   lista vazia, entrada invalida ou indice fora dos limites.
  */
 CategoriaNo* selecionar_categoria(CategoriaNo *inicio_categorias) {
     CategoriaNo *categoria_selecionada = NULL;
@@ -47,7 +68,7 @@ CategoriaNo* selecionar_categoria(CategoriaNo *inicio_categorias) {
         int indice = 1;
         CategoriaNo *atual = inicio_categorias;
 
-        /* Percorre a lista de categorias e exibe com numeracao sequencial */
+        /* Percorre a lista encadeada e exibe cada categoria com seu indice sequencial */
         while (atual != NULL) {
             printf(" [%2d] %s\n", indice, obter_nome_categoria(atual->categoria));
             indice++;
@@ -59,7 +80,7 @@ CategoriaNo* selecionar_categoria(CategoriaNo *inicio_categorias) {
         if (scanf(" %d", &opcao_escolhida) == 1) {
             limpar_buffer_teclado();
 
-            /* Localiza o no correspondente ao indice informado */
+            /* Localiza o no correspondente ao indice numerico selecionado */
             if (opcao_escolhida >= 1 && opcao_escolhida < indice) {
                 int contador = 1;
                 atual = inicio_categorias;
@@ -69,11 +90,11 @@ CategoriaNo* selecionar_categoria(CategoriaNo *inicio_categorias) {
                 }
                 categoria_selecionada = atual;
             } else {
-                printf("[ERRO] Numero de categoria invalido!\n");
+                printf("[ERRO] Numero de categoria invalido! Escolha entre 1 e %d.\n", indice - 1);
             }
         } else {
             limpar_buffer_teclado();
-            printf("[ERRO] Entrada invalida. Por favor, digite um numero.\n");
+            printf("[ERRO] Entrada invalida. Por favor, digite um valor numerico.\n");
         }
     }
 
@@ -82,19 +103,163 @@ CategoriaNo* selecionar_categoria(CategoriaNo *inicio_categorias) {
 
 /*
  * ============================================================================
- * IMPLEMENTACAO DAS OPCOES 4, 5 e 6
+ * IMPLEMENTACAO DAS OPCOES 1, 2 E 3 (LISTAGENS GERAIS E ENERGIA)
+ * ============================================================================
+ */
+
+/*
+ * Funcao: executar_opcao_1
+ * Objetivo: Atende ao requisito C.c.1 do trabalho:
+ *           "Liste todas as categorias de alimentos na ordem constante na lista Categorias."
+ * Algoritmo: Percorre sequencialmente a lista simplesmente encadeada de categorias,
+ *            a qual ja se encontra em ordem alfabetica rigorosa desde a carga inicial.
+ * Parametros:
+ *   - categorias: Ponteiro para a cabeca da lista de categorias.
+ */
+void executar_opcao_1(CategoriaNo *categorias) {
+    CategoriaNo *atual = categorias;
+    int contador = 1;
+
+    printf("\n==============================================================================\n");
+    printf(" OPCAO 1: Listar todas as categorias de alimentos\n");
+    printf("==============================================================================\n");
+
+    if (atual == NULL) {
+        printf("[AVISO] Nenhuma categoria cadastrada no sistema.\n");
+    } else {
+        while (atual != NULL) {
+            printf("  %2d. %s\n", contador, obter_nome_categoria(atual->categoria));
+            atual = atual->proxima;
+            contador++;
+        }
+        printf("------------------------------------------------------------------------------\n");
+        printf("Total de categorias cadastradas: %d\n", contador - 1);
+    }
+
+    pausar_tela();
+}
+
+/*
+ * Funcao: executar_opcao_2
+ * Objetivo: Atende ao requisito C.c.2 do trabalho:
+ *           "Liste todos os alimentos de certa categoria na ordem constante na lista
+ *            de alimentos dessa categoria."
+ * Algoritmo: Solicita a selecao da categoria desejada e varre a lista encadeada interna
+ *            de alimentos, exibindo codigo, descricao (truncada a 50 chars), Kcal e proteina.
+ * Parametros:
+ *   - categorias: Ponteiro para a cabeca da lista de categorias.
+ */
+void executar_opcao_2(CategoriaNo *categorias) {
+    printf("\n==============================================================================\n");
+    printf(" OPCAO 2: Listar alimentos de certa categoria em ordem alfabetica\n");
+    printf("==============================================================================\n");
+
+    CategoriaNo *categoria = selecionar_categoria(categorias);
+
+    if (categoria != NULL) {
+        AlimentoNo *alimento_atual = categoria->alimentos;
+        printf("\nALIMENTOS: %s\n", obter_nome_categoria(categoria->categoria));
+        printf("------------------------------------------------------------------------------\n");
+        printf("%-5s | %-50s | %-12s | %-10s\n", "NUM", "DESCRICAO", "ENERGIA", "PROTEINA");
+        printf("------------------------------------------------------------------------------\n");
+
+        int total = 0;
+        if (alimento_atual == NULL) {
+            printf(" [Nenhum alimento cadastrado nesta categoria]\n");
+        } else {
+            while (alimento_atual != NULL) {
+                printf("%-5d | %-50.50s | %8.2f kcal | %7.2f g\n",
+                       alimento_atual->alimento.numero,
+                       alimento_atual->alimento.descricao,
+                       alimento_atual->alimento.energia,
+                       alimento_atual->alimento.proteina);
+                alimento_atual = alimento_atual->proximo;
+                total++;
+            }
+        }
+        printf("------------------------------------------------------------------------------\n");
+        printf("Total de alimentos listados: %d\n", total);
+        pausar_tela();
+    }
+}
+
+/*
+ * Funcao: listar_arvore_energia_decrescente
+ * Objetivo: Realiza o percurso em ordem decrescente (visita subarvore direita -> no raiz ->
+ *           subarvore esquerda) na Arvore Binaria de Busca indexada por energia (Kcal).
+ * Complexidade: O(N) para visitar todos os N nós da arvore da categoria.
+ * Parametros:
+ *   - raiz: Ponteiro para o no corrente da ArvoreEnergiaNo.
+ *   - contador: Ponteiro para acumulador da quantidade de itens listados.
+ */
+void listar_arvore_energia_decrescente(const ArvoreEnergiaNo *raiz, int *contador) {
+    if (raiz != NULL) {
+        /* 1. Visita os maiores valores primeiro (subarvore direita) */
+        listar_arvore_energia_decrescente(raiz->direita, contador);
+
+        /* 2. Processa o no atual */
+        if (raiz->alimento != NULL) {
+            (*contador)++;
+            printf("%-5d | %-50.50s | %8.2f kcal | %7.2f g\n",
+                   raiz->alimento->alimento.numero,
+                   raiz->alimento->alimento.descricao,
+                   raiz->energia,
+                   raiz->alimento->alimento.proteina);
+        }
+
+        /* 3. Visita os menores valores (subarvore esquerda) */
+        listar_arvore_energia_decrescente(raiz->esquerda, contador);
+    }
+}
+
+/*
+ * Funcao: executar_opcao_3
+ * Objetivo: Atende ao requisito C.c.3 do trabalho:
+ *           "Liste todos os alimentos de certa categoria em ordem decrescente com
+ *            respeito a energia (em Kcal) dos alimentos. (A implementacao dessa
+ *            operacao deve utilizar a correspondente arvore binaria de indexacao.)"
+ * Parametros:
+ *   - categorias: Ponteiro para a cabeca da lista de categorias.
+ */
+void executar_opcao_3(CategoriaNo *categorias) {
+    printf("\n==============================================================================\n");
+    printf(" OPCAO 3: Listar alimentos de certa categoria por energia decrescente (Arvore)\n");
+    printf("==============================================================================\n");
+
+    CategoriaNo *categoria = selecionar_categoria(categorias);
+
+    if (categoria != NULL) {
+        printf("\nALIMENTOS POR ENERGIA (DECRESCENTE): %s\n", obter_nome_categoria(categoria->categoria));
+        printf("------------------------------------------------------------------------------\n");
+        printf("%-5s | %-50s | %-12s | %-10s\n", "NUM", "DESCRICAO", "ENERGIA", "PROTEINA");
+        printf("------------------------------------------------------------------------------\n");
+
+        int total_exibidos = 0;
+        if (categoria->arvore_energia != NULL) {
+            listar_arvore_energia_decrescente(categoria->arvore_energia, &total_exibidos);
+        } else {
+            printf(" [Nenhum alimento cadastrado nesta categoria]\n");
+        }
+
+        printf("------------------------------------------------------------------------------\n");
+        printf("Total de alimentos listados: %d\n", total_exibidos);
+        pausar_tela();
+    }
+}
+
+/*
+ * ============================================================================
+ * IMPLEMENTACAO DAS OPCOES 4, 5 E 6 (PROTEINA E BUSCA POR INTERVALO NA ARVORE)
  * ============================================================================
  */
 
 /*
  * Funcao: exibir_arvore_proteina_decrescente
- * Objetivo: Realiza o percurso em ordem decrescente na arvore binaria de proteina.
- *           Como a arvore armazena valores menores a esquerda e maiores/iguais
- *           a direita, o percurso decrescente visita primeiro a subarvore direita,
- *           depois o no atual (raiz) e por fim a subarvore esquerda.
+ * Objetivo: Realiza o percurso em ordem decrescente na Arvore Binaria de Busca indexada
+ *           por proteina (gramas), visitando subarvore direita -> raiz -> subarvore esquerda.
  * Parametros:
- *   - raiz: Ponteiro para a raiz da arvore binaria de proteina.
- *   - contador: Ponteiro para acumulador da quantidade de itens exibidos.
+ *   - raiz: Ponteiro para o no corrente da ArvoreProteinaNo.
+ *   - contador: Ponteiro para acumulador da quantidade de itens listados.
  */
 void exibir_arvore_proteina_decrescente(const ArvoreProteinaNo *raiz, int *contador) {
     if (raiz != NULL) {
@@ -118,11 +283,12 @@ void exibir_arvore_proteina_decrescente(const ArvoreProteinaNo *raiz, int *conta
 
 /*
  * Funcao: executar_opcao_4
- * Objetivo: Cumpre o requisito C.c.4 do trabalho:
- *           "Liste todos os alimentos de certa categoria em ordem decrescente
- *            com respeito a quantidade de proteina (em gramas) dos alimentos.
- *            (A implementacao dessa operacao deve utilizar a correspondente
- *            arvore binaria de indexacao.)"
+ * Objetivo: Atende ao requisito C.c.4 do trabalho:
+ *           "Liste todos os alimentos de certa categoria em ordem decrescente com
+ *            respeito a quantidade de proteina (em gramas) dos alimentos. (A implementacao
+ *            dessa operacao deve utilizar a correspondente arvore binaria de indexacao.)"
+ * Parametros:
+ *   - categorias: Ponteiro para a cabeca da lista de categorias.
  */
 void executar_opcao_4(CategoriaNo *categorias) {
     printf("\n==============================================================================\n");
@@ -140,20 +306,23 @@ void executar_opcao_4(CategoriaNo *categorias) {
         int total_exibidos = 0;
         if (categoria->arvore_proteina != NULL) {
             exibir_arvore_proteina_decrescente(categoria->arvore_proteina, &total_exibidos);
+        } else {
+            printf(" [Nenhum alimento cadastrado nesta categoria]\n");
         }
 
         printf("------------------------------------------------------------------------------\n");
         printf("Total de alimentos listados: %d\n", total_exibidos);
+        pausar_tela();
     }
 }
 
 /*
  * Funcao: buscar_arvore_energia_faixa
- * Objetivo: Realiza busca por faixa [valor_minimo, valor_maximo] na arvore
- *           binaria de energia, aproveitando a propriedade de ordenacao da BST
- *           para podar subarvores que estejam fora dos limites.
+ * Objetivo: Realiza busca com poda de ramos (range query) na Arvore Binaria de Busca de energia.
+ *           Evita visitar subarvores que estejam comprovadamente fora do intervalo [min, max],
+ *           garantindo desempenho eficiente na arvore indexada.
  * Parametros:
- *   - raiz: Ponteiro para o no da arvore binaria de energia.
+ *   - raiz: Ponteiro para o no corrente da ArvoreEnergiaNo.
  *   - valor_minimo: Limite inferior da faixa de energia (em Kcal).
  *   - valor_maximo: Limite superior da faixa de energia (em Kcal).
  *   - contador: Ponteiro para acumulador de itens encontrados.
@@ -165,7 +334,7 @@ void buscar_arvore_energia_faixa(const ArvoreEnergiaNo *raiz, float valor_minimo
             buscar_arvore_energia_faixa(raiz->esquerda, valor_minimo, valor_maximo, contador);
         }
 
-        /* Verifica se o valor do no atual esta dentro do intervalo desejado [min, max] */
+        /* Processa o no atual caso esteja contido na faixa [min, max] */
         if (raiz->energia >= valor_minimo && raiz->energia <= valor_maximo) {
             if (raiz->alimento != NULL) {
                 (*contador)++;
@@ -177,8 +346,7 @@ void buscar_arvore_energia_faixa(const ArvoreEnergiaNo *raiz, float valor_minimo
             }
         }
 
-        /* Poda a direita: como valores maiores ou iguais vao para a direita,
-           visita a subarvore direita se raiz->energia <= valor_maximo */
+        /* Poda a direita: como chaves repetidas/maiores vao para a direita, visita se raiz->energia <= max */
         if (raiz->energia <= valor_maximo) {
             buscar_arvore_energia_faixa(raiz->direita, valor_minimo, valor_maximo, contador);
         }
@@ -187,11 +355,11 @@ void buscar_arvore_energia_faixa(const ArvoreEnergiaNo *raiz, float valor_minimo
 
 /*
  * Funcao: executar_opcao_5
- * Objetivo: Cumpre o requisito C.c.5 do trabalho:
- *           "Liste todos os alimentos de certa categoria cuja energia esteja
- *            entre um valor minimo e um valor maximo escolhidos pelo usuario.
- *            (A implementacao dessa operacao deve utilizar a correspondente
- *            arvore binaria de indexacao.)"
+ * Objetivo: Atende ao requisito C.c.5 do trabalho:
+ *           "Liste todos os alimentos de certa categoria cuja energia esteja entre um
+ *            valor minimo e um valor maximo escolhidos pelo usuario. (Arvore)"
+ * Parametros:
+ *   - categorias: Ponteiro para a cabeca da lista de categorias.
  */
 void executar_opcao_5(CategoriaNo *categorias) {
     printf("\n==============================================================================\n");
@@ -217,7 +385,7 @@ void executar_opcao_5(CategoriaNo *categorias) {
                     float temporario = valor_minimo;
                     valor_minimo = valor_maximo;
                     valor_maximo = temporario;
-                    printf("[INFO] Valores invertidos ajustados automaticamente: Min = %.1f, Max = %.1f\n",
+                    printf("[INFO] Valores ajustados automaticamente: Min = %.1f, Max = %.1f\n",
                            valor_minimo, valor_maximo);
                 }
 
@@ -234,23 +402,25 @@ void executar_opcao_5(CategoriaNo *categorias) {
 
                 printf("------------------------------------------------------------------------------\n");
                 printf("Total de alimentos encontrados na faixa: %d\n", total_encontrados);
+                pausar_tela();
             } else {
                 limpar_buffer_teclado();
                 printf("[ERRO] Entrada invalida para o valor maximo.\n");
+                pausar_tela();
             }
         } else {
             limpar_buffer_teclado();
             printf("[ERRO] Entrada invalida para o valor minimo.\n");
+            pausar_tela();
         }
     }
 }
 
 /*
  * Funcao: buscar_arvore_proteina_faixa
- * Objetivo: Realiza busca por faixa [valor_minimo, valor_maximo] na arvore
- *           binaria de proteina com poda de ramos desnecessarios.
+ * Objetivo: Realiza busca com poda de ramos (range query) na Arvore Binaria de Busca de proteina.
  * Parametros:
- *   - raiz: Ponteiro para o no da arvore binaria de proteina.
+ *   - raiz: Ponteiro para o no corrente da ArvoreProteinaNo.
  *   - valor_minimo: Limite inferior da faixa de proteina (em gramas).
  *   - valor_maximo: Limite superior da faixa de proteina (em gramas).
  *   - contador: Ponteiro para acumulador de itens encontrados.
@@ -262,7 +432,7 @@ void buscar_arvore_proteina_faixa(const ArvoreProteinaNo *raiz, float valor_mini
             buscar_arvore_proteina_faixa(raiz->esquerda, valor_minimo, valor_maximo, contador);
         }
 
-        /* Processa o no se estiver no intervalo */
+        /* Processa o no corrente caso pertenca ao intervalo [min, max] */
         if (raiz->proteina >= valor_minimo && raiz->proteina <= valor_maximo) {
             if (raiz->alimento != NULL) {
                 (*contador)++;
@@ -283,11 +453,11 @@ void buscar_arvore_proteina_faixa(const ArvoreProteinaNo *raiz, float valor_mini
 
 /*
  * Funcao: executar_opcao_6
- * Objetivo: Cumpre o requisito C.c.6 do trabalho:
- *           "Liste todos os alimentos de certa categoria cuja proteina esteja
- *            entre um valor minimo e um valor maximo escolhidos pelo usuario.
- *            (A implementacao dessa operacao deve utilizar a correspondente
- *            arvore binaria de indexacao.)"
+ * Objetivo: Atende ao requisito C.c.6 do trabalho:
+ *           "Liste todos os alimentos de certa categoria cuja proteina esteja entre um
+ *            valor minimo e um valor maximo escolhidos pelo usuario. (Arvore)"
+ * Parametros:
+ *   - categorias: Ponteiro para a cabeca da lista de categorias.
  */
 void executar_opcao_6(CategoriaNo *categorias) {
     printf("\n==============================================================================\n");
@@ -313,7 +483,7 @@ void executar_opcao_6(CategoriaNo *categorias) {
                     float temporario = valor_minimo;
                     valor_minimo = valor_maximo;
                     valor_maximo = temporario;
-                    printf("[INFO] Valores invertidos ajustados automaticamente: Min = %.2f, Max = %.2f\n",
+                    printf("[INFO] Valores ajustados automaticamente: Min = %.2f, Max = %.2f\n",
                            valor_minimo, valor_maximo);
                 }
 
@@ -330,128 +500,30 @@ void executar_opcao_6(CategoriaNo *categorias) {
 
                 printf("------------------------------------------------------------------------------\n");
                 printf("Total de alimentos encontrados na faixa: %d\n", total_encontrados);
+                pausar_tela();
             } else {
                 limpar_buffer_teclado();
                 printf("[ERRO] Entrada invalida para o valor maximo.\n");
+                pausar_tela();
             }
         } else {
             limpar_buffer_teclado();
             printf("[ERRO] Entrada invalida para o valor minimo.\n");
+            pausar_tela();
         }
     }
 }
 
 /*
  * ============================================================================
- * IMPLEMENTACAO DAS OPCOES 1, 2 e 3
- * ============================================================================
- */
-
-/*
- * Funcao: executar_opcao_1
- * Objetivo: Cumpre o requisito C.c.1 do trabalho:
- *           "Liste todas as categorias de alimentos na ordem constante na lista Categorias."
- */
-void executar_opcao_1(CategoriaNo *categorias) {
-    CategoriaNo *atual = categorias;
-    int contador = 1;
-
-    printf("\n==============================================================================\n");
-    printf(" OPCAO 1: Listar todas as categorias de alimentos\n");
-    printf("==============================================================================\n");
-    while (atual != NULL) {
-        printf(" %2d. %s\n", contador, obter_nome_categoria(atual->categoria));
-        atual = atual->proxima;
-        contador++;
-    }
-    printf("------------------------------------------------------------------------------\n");
-    printf("Total de categorias: %d\n", contador - 1);
-}
-
-/*
- * Funcao: executar_opcao_2
- * Objetivo: Cumpre o requisito C.c.2 do trabalho:
- *           "Liste todos os alimentos de certa categoria na ordem constante na lista de alimentos dessa categoria."
- */
-void executar_opcao_2(CategoriaNo *categorias) {
-    printf("\n==============================================================================\n");
-    printf(" OPCAO 2: Listar alimentos de certa categoria em ordem alfabetica\n");
-    printf("==============================================================================\n");
-
-    CategoriaNo *categoria = selecionar_categoria(categorias);
-
-    if (categoria != NULL) {
-        AlimentoNo *alimento_atual = categoria->alimentos;
-        printf("\nALIMENTOS: %s\n", obter_nome_categoria(categoria->categoria));
-        printf("------------------------------------------------------------------------------\n");
-        printf("%-5s | %-50s | %-12s | %-10s\n", "NUM", "DESCRICAO", "ENERGIA", "PROTEINA");
-        printf("------------------------------------------------------------------------------\n");
-        int total = 0;
-        while (alimento_atual != NULL) {
-            printf("%-5d | %-50.50s | %8.2f kcal | %7.2f g\n",
-                   alimento_atual->alimento.numero,
-                   alimento_atual->alimento.descricao,
-                   alimento_atual->alimento.energia,
-                   alimento_atual->alimento.proteina);
-            alimento_atual = alimento_atual->proximo;
-            total++;
-        }
-        printf("------------------------------------------------------------------------------\n");
-        printf("Total de alimentos: %d\n", total);
-    }
-}
-
-/*
- * Funcao: listar_arvore_energia_decrescente
- * Objetivo: Realiza o percurso decrescente na arvore binaria de energia (Direita -> Raiz -> Esquerda).
- */
-void listar_arvore_energia_decrescente(const ArvoreEnergiaNo *raiz) {
-    if (raiz != NULL) {
-        listar_arvore_energia_decrescente(raiz->direita);
-        if (raiz->alimento != NULL) {
-            printf("%-5d | %-50.50s | %8.2f kcal | %7.2f g\n",
-                   raiz->alimento->alimento.numero,
-                   raiz->alimento->alimento.descricao,
-                   raiz->energia,
-                   raiz->alimento->alimento.proteina);
-        }
-        listar_arvore_energia_decrescente(raiz->esquerda);
-    }
-}
-
-/*
- * Funcao: executar_opcao_3
- * Objetivo: Cumpre o requisito C.c.3 do trabalho:
- *           "Liste todos os alimentos de certa categoria em ordem decrescente
- *            com respeito a energia (em Kcal) dos alimentos. (Arvore)"
- */
-void executar_opcao_3(CategoriaNo *categorias) {
-    printf("\n==============================================================================\n");
-    printf(" OPCAO 3: Listar alimentos de certa categoria por energia decrescente (Arvore)\n");
-    printf("==============================================================================\n");
-
-    CategoriaNo *categoria = selecionar_categoria(categorias);
-
-    if (categoria != NULL) {
-        printf("\nALIMENTOS POR ENERGIA (DECRESCENTE): %s\n", obter_nome_categoria(categoria->categoria));
-        printf("------------------------------------------------------------------------------\n");
-        printf("%-5s | %-50s | %-12s | %-10s\n", "NUM", "DESCRICAO", "ENERGIA", "PROTEINA");
-        printf("------------------------------------------------------------------------------\n");
-        listar_arvore_energia_decrescente(categoria->arvore_energia);
-        printf("------------------------------------------------------------------------------\n");
-    }
-}
-
-/*
- * ============================================================================
- * IMPLEMENTACAO DAS OPCOES 7, 8 e 9 E FUNCOES AUXILIARES
+ * IMPLEMENTACAO DAS OPCOES 7, 8 E 9 (REMOCOES E ENCERRAMENTO COM PERSISTENCIA)
  * ============================================================================
  */
 
 /*
  * Funcao: remover_categoria_da_lista
  * Objetivo: Remove um no de categoria da lista simplesmente encadeada de categorias,
- *           liberando toda a memoria alocada para sua lista de alimentos e suas
+ *           liberando toda a memoria heap alocada para sua lista de alimentos e suas
  *           duas arvores binarias de indexacao (energia e proteina).
  * Retorno: true se a categoria foi encontrada e removida, false caso contrario.
  */
@@ -474,7 +546,7 @@ bool remover_categoria_da_lista(CategoriaNo **inicio, Categoria categoria_alvo) 
                 anterior->proxima = atual->proxima;
             }
 
-            /* Libera todos os recursos alocados para esta categoria */
+            /* Libera todos os recursos dinamicos alocados para esta categoria */
             liberar_arvore_energia(atual->arvore_energia);
             liberar_arvore_proteina(atual->arvore_proteina);
             liberar_alimentos(atual->alimentos);
@@ -490,8 +562,8 @@ bool remover_categoria_da_lista(CategoriaNo **inicio, Categoria categoria_alvo) 
 /*
  * Funcao: remover_alimento_da_lista
  * Objetivo: Remove um no de alimento da lista simplesmente encadeada de alimentos
- *           de uma categoria com base no seu codigo numerico.
- * Retorno: true se o alimento foi encontrado e removido, false caso contrario.
+ *           de uma determinada categoria com base no seu codigo numerico.
+ * Retorno: true se o alimento foi localizado e removido, false caso contrario.
  */
 bool remover_alimento_da_lista(AlimentoNo **inicio, int numero_alimento) {
     bool removido = false;
@@ -522,22 +594,22 @@ bool remover_alimento_da_lista(AlimentoNo **inicio, int numero_alimento) {
 
 /*
  * Funcao: reconstruir_arvores_categoria
- * Objetivo: Atualiza as arvores binarias de indexacao (energia e proteina) de uma
- *           determinada categoria apos a remocao de um alimento, liberando as
- *           arvores antigas e reconstruindo novas arvores a partir da lista
- *           encadeada atualizada de alimentos.
- * Retorno: true se a reconstrucao foi bem-sucedida, false em caso de falha de alocacao.
+ * Objetivo: Cumpre o requisito C.c.8: atualiza as arvores binarias de indexacao da
+ *           categoria afetada, liberando as arvores antigas e gerando novas estruturas
+ *           a partir da lista de alimentos atualizada.
+ * Retorno: true se a reconstrucao foi concluida com exito, false em caso de falha de alocacao.
  */
 bool reconstruir_arvores_categoria(CategoriaNo *categoria) {
     bool sucesso = true;
 
     if (categoria != NULL) {
-        /* Libera as arvores anteriores */
+        /* 1. Libera a memoria das arvores binarias anteriores */
         liberar_arvore_energia(categoria->arvore_energia);
         liberar_arvore_proteina(categoria->arvore_proteina);
         categoria->arvore_energia = NULL;
         categoria->arvore_proteina = NULL;
 
+        /* 2. Reinsere cada alimento remanescente nas novas arvores */
         AlimentoNo *alimento_atual = categoria->alimentos;
 
         while (alimento_atual != NULL && sucesso) {
@@ -561,9 +633,9 @@ bool reconstruir_arvores_categoria(CategoriaNo *categoria) {
 
 /*
  * Funcao: salvar_dados_binario
- * Objetivo: Grava todos os alimentos atualmente em memoria em formato binario
- *           no arquivo especificado (dados.bin).
- * Retorno: true em caso de sucesso na gravacao, false caso ocorra falha de I/O.
+ * Objetivo: Cumpre o requisito C.c.9: grava em formato binario (dados.bin) todos os
+ *           alimentos remanescentes em memoria, garantindo a persistencia das alteracoes.
+ * Retorno: true em caso de gravacao correta de todos os registros, false em erro de I/O.
  */
 bool salvar_dados_binario(CategoriaNo *categorias, const char *caminho_arquivo) {
     bool sucesso = true;
@@ -595,7 +667,7 @@ bool salvar_dados_binario(CategoriaNo *categorias, const char *caminho_arquivo) 
 
 /*
  * Funcao: executar_opcao_7
- * Objetivo: Cumpre o requisito C.c.7 do trabalho:
+ * Objetivo: Atende ao requisito C.c.7 do trabalho:
  *           "Remova uma categoria de alimentos."
  */
 void executar_opcao_7(CategoriaNo **categorias, bool *dados_modificados) {
@@ -622,7 +694,7 @@ void executar_opcao_7(CategoriaNo **categorias, bool *dados_modificados) {
                 bool removido = remover_categoria_da_lista(categorias, categoria_alvo);
                 if (removido) {
                     *dados_modificados = true;
-                    printf("\n[SUCESSO] Categoria '%s' e todos os seus alimentos foram removidos com sucesso!\n", nome_categoria);
+                    printf("\n[SUCESSO] Categoria '%s' e seus alimentos foram removidos com sucesso!\n", nome_categoria);
                 } else {
                     printf("\n[ERRO] Falha ao remover a categoria.\n");
                 }
@@ -633,12 +705,13 @@ void executar_opcao_7(CategoriaNo **categorias, bool *dados_modificados) {
             limpar_buffer_teclado();
             printf("\n[ERRO] Opcao invalida. Operacao cancelada.\n");
         }
+        pausar_tela();
     }
 }
 
 /*
  * Funcao: executar_opcao_8
- * Objetivo: Cumpre o requisito C.c.8 do trabalho:
+ * Objetivo: Atende ao requisito C.c.8 do trabalho:
  *           "Remova um alimento especifico. (Essa operacao implica na atualizacao
  *            das arvores binarias de indexacao da correspondente categoria.
  *            Essa atualizacao pode ser feita por meio da criacao novas arvores.)"
@@ -653,6 +726,7 @@ void executar_opcao_8(CategoriaNo **categorias, bool *dados_modificados) {
     if (categoria != NULL) {
         if (categoria->alimentos == NULL) {
             printf("\n[AVISO] A categoria '%s' nao possui alimentos cadastrados.\n", obter_nome_categoria(categoria->categoria));
+            pausar_tela();
         } else {
             printf("\n--- ALIMENTOS DA CATEGORIA '%s' ---\n", obter_nome_categoria(categoria->categoria));
             AlimentoNo *atual = categoria->alimentos;
@@ -688,13 +762,14 @@ void executar_opcao_8(CategoriaNo **categorias, bool *dados_modificados) {
                 limpar_buffer_teclado();
                 printf("\n[ERRO] Codigo invalido. Operacao cancelada.\n");
             }
+            pausar_tela();
         }
     }
 }
 
 /*
  * Funcao: executar_opcao_9
- * Objetivo: Cumpre o requisito C.c.9 do trabalho:
+ * Objetivo: Atende ao requisito C.c.9 do trabalho:
  *           "Encerre o programa, fazendo com que uma versao atualizada do arquivo
  *            dados.bin seja gerada caso alguma categoria ou algum alimento
  *            tenha sido removido."
@@ -711,12 +786,12 @@ void executar_opcao_9(CategoriaNo *categorias, bool dados_modificados, bool *exe
         bool sucesso = salvar_dados_binario(categorias, "../../Dados/dados.bin");
 
         if (sucesso) {
-            printf("[SUCESSO] Versao atualizada do arquivo 'dados.bin' foi gravada com sucesso!\n");
+            printf("[SUCESSO] Versao atualizada do arquivo 'dados.bin' gravada com sucesso!\n");
         } else {
-            printf("[ERRO] Nao foi possivel gravar o arquivo 'dados.bin'.\n");
+            printf("[ERRO] Falha ao gravar o arquivo 'dados.bin'.\n");
         }
     } else {
-        printf("[INFO] Nenhuma alteracao foi realizada durante a execucao.\n");
+        printf("[INFO] Nenhuma alteracao foi realizada durante a sessao.\n");
         printf("[INFO] O arquivo 'dados.bin' foi mantido inalterado.\n");
     }
 
@@ -759,6 +834,7 @@ void executar_interface(CategoriaNo **categorias) {
         printf(" [9] Encerrar o programa\n");
         printf("==============================================================================\n");
         printf("Escolha uma opcao (1 a 9): ");
+        fflush(stdout);
 
         int opcao = 0;
         int status_leitura = scanf(" %d", &opcao);
@@ -785,13 +861,15 @@ void executar_interface(CategoriaNo **categorias) {
                 executar_opcao_9(*categorias, dados_modificados, &executando);
             } else {
                 printf("\n[ERRO] Opcao invalida! Digite um valor entre 1 e 9.\n");
+                pausar_tela();
             }
         } else {
             if (status_leitura == EOF) {
                 executando = false;
             } else {
                 limpar_buffer_teclado();
-                printf("\n[ERRO] Entrada invalida! Por favor, digite um numero.\n");
+                printf("\n[ERRO] Entrada invalida! Por favor, digite um numero valido entre 1 e 9.\n");
+                pausar_tela();
             }
         }
     }

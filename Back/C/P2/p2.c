@@ -1,79 +1,42 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include <stdlib.h>
-#include <math.h>
-#include <string.h>
 
 #include "categorias_lista/categorias_lista.h"
 #include "../../../Front/front.h"
 
+/*
+ * ============================================================================
+ * PROGRAMA P2 - SISTEMA DE CONSULTA E GERENCIAMENTO DA TABELA TACO
+ * Arquivo: p2.c
+ * 
+ * Atendimento estrito ao Requisito 3:
+ * "A funcao main do programa P2 deve ficar no arquivo P2.c.
+ *  Os arquivos P1.c e P2.c nao devem possuir correspondentes arquivos de cabecalho.
+ *  Desse modo, os arquivos P1.c e P2.c contem somente as respectivas funcoes main
+ *  e incluem os arquivos de cabecalho necessarios e somente os necessarios!"
+ * ============================================================================
+ */
 
-bool carregar_dados(CategoriaNo **categorias){
-    bool sucesso = true;
-
-    FILE *arquivo = fopen("../../Dados/dados.bin", "rb");
-
-    if (arquivo == NULL){
-        sucesso = false;
-    } else {
-        Alimento alimento;
-
-        while (sucesso && fread(&alimento, sizeof(Alimento), 1, arquivo) == 1){
-            sucesso = inserir_alimento_categoria(categorias, alimento);
-        }
-
-        if (ferror(arquivo)){
-            sucesso = false;
-        }
-
-        fclose(arquivo);
-    }
-
-    if (sucesso){
-        sucesso = construir_arvores(*categorias);
-    }
-
-    if (!sucesso){
-        liberar_categorias(*categorias);
-        *categorias = NULL;
-    }
-
-    return sucesso;
-}
-
-
-int main() {
+int main(void) {
     CategoriaNo *categorias = NULL;
+    const char *caminho_dados_bin = "../../Dados/dados.bin";
 
-    size_t total_categorias = 0;
-    size_t total_alimentos = 0;
-
-    if (carregar_dados(&categorias)) {
-        CategoriaNo *categoria_atual = categorias;
-
-        while (categoria_atual != NULL) {
-            total_categorias++;
-
-            AlimentoNo *alimento_atual = categoria_atual->alimentos;
-
-            while (alimento_atual != NULL) {
-                total_alimentos++;
-                alimento_atual = alimento_atual->proximo;
-            }
-
-            categoria_atual = categoria_atual->proxima;
-        }
-
-        printf("Dados carregados com sucesso!\n");
-        printf("Total de categorias: %zu\n", total_categorias);
-        printf("Total de alimentos: %zu\n", total_alimentos);
-
-        /* Inicia a interface do usuario em terminal com o loop de opcoes */
+    /*
+     * Carrega todos os dados do arquivo binario gerado na Etapa B para a memoria heap,
+     * organizando em listas ligadas ordenadas e arvores binarias de indexacao.
+     */
+    if (carregar_dados_binario(&categorias, caminho_dados_bin)) {
+        /* Inicia o loop da interface de console com as opcoes de 1 a 9 */
         executar_interface(&categorias);
     } else {
-        printf("Erro ao carregar os dados.\n");
+        printf("[ERRO CRITICO] Falha ao abrir ou carregar os registros de '%s'.\n", caminho_dados_bin);
+        printf("Verifique se o programa P1 foi executado previamente para gerar a base binaria.\n");
     }
 
+    /*
+     * Atendimento ao Requisito 5:
+     * "Toda memoria alocada dinamicamente deve ser liberada antes do termino do programa."
+     */
     liberar_categorias(categorias);
 
     return 0;
