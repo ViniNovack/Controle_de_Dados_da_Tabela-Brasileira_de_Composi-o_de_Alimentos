@@ -9,7 +9,7 @@ Projeto prático desenvolvido para a disciplina de **Programação Imperativa** 
 | Integrante | Cor no PDF | Módulo / Responsabilidade | Status |
 | :--- | :---: | :--- | :---: |
 | **Vini** | 🔵 Azul | Transcrição de dados, criação do binário (`dados.bin`), listas ligadas ordenadas e geração das árvores binárias | ✅ Concluído |
-| **Kulik** | 🟢 Verde | Front-End: Opções 1 (Categorias), 2 (Alimentos) e 3 (Energia Decrescente via Árvore) | ⏳ A preencher |
+| **Kulik** | 🟢 Verde | Front-End: Opções 1 (Categorias), 2 (Alimentos) e 3 (Energia Decrescente via Árvore) | ✅ Integrado |
 | **Guilherme** | ⚪ Cinza | Front-End: Opções 4 (Proteína Decrescente via Árvore), 5 (Faixa Energia via Árvore) e 6 (Faixa Proteína via Árvore) | ✅ Concluído |
 | **Carol** | 🟠 Laranja | Front-End: Opções 7 (Remover Categoria), 8 (Remover Alimento) e 9 (Sair e Salvar `dados.bin`) | ⏳ A preencher |
 
