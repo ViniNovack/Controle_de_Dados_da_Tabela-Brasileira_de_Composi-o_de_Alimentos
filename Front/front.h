@@ -16,11 +16,6 @@
  * ============================================================================
  * MODULO DE INTERFACE COM O USUARIO (FRONT-END DE CONSOLE)
  * Trabalho do RA2 - Programacao Imperativa - PUCPR
- * 
- * Divisao de responsabilidades no menu:
- * - Opcoes 1, 2 e 3: Kulik
- * - Opcoes 4, 5 e 6: Gui (Guilherme)
- * - Opcoes 7, 8 e 9: Carol
  * ============================================================================
  */
 
@@ -30,17 +25,15 @@ void executar_interface(CategoriaNo **categorias);
 /* Funcao utilitaria para selecao de categoria pelo usuario */
 CategoriaNo* selecionar_categoria(CategoriaNo *inicio_categorias);
 
-/* ============================================================================
- * BLOCO DO KULIK (Opcoes 1, 2 e 3)
- * ============================================================================
+/*
+ * Opcoes 1, 2 e 3: Listagem de categorias e alimentos
  */
 void executar_opcao_1(CategoriaNo *categorias);
 void executar_opcao_2(CategoriaNo *categorias);
 void executar_opcao_3(CategoriaNo *categorias);
 
-/* ============================================================================
- * BLOCO DO GUILHERME (Opcoes 4, 5 e 6)
- * ============================================================================
+/*
+ * Opcoes 4, 5 e 6: Consultas com arvores binarias de proteina e energia
  */
 /* Opcao 4: Listar alimentos de uma categoria em ordem decrescente de proteina */
 void executar_opcao_4(CategoriaNo *categorias);
@@ -54,9 +47,8 @@ void buscar_arvore_energia_faixa(const ArvoreEnergiaNo *raiz, float valor_minimo
 void executar_opcao_6(CategoriaNo *categorias);
 void buscar_arvore_proteina_faixa(const ArvoreProteinaNo *raiz, float valor_minimo, float valor_maximo, int *contador);
 
-/* ============================================================================
- * BLOCO DA CAROL (Opcoes 7, 8 e 9)
- * ============================================================================
+/*
+ * Opcoes 7, 8 e 9: Remocoes e encerramento
  */
 void executar_opcao_7(CategoriaNo **categorias);
 void executar_opcao_8(CategoriaNo **categorias);

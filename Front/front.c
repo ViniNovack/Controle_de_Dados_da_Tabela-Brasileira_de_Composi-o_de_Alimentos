@@ -1,5 +1,9 @@
 #include "front.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 /*
  * ============================================================================
  * MODULO DE INTERFACE COM O USUARIO (FRONT-END DE CONSOLE)
@@ -76,7 +80,7 @@ CategoriaNo* selecionar_categoria(CategoriaNo *inicio_categorias) {
 
 /*
  * ============================================================================
- * IMPLEMENTACAO DAS FUNCOES DO BLOCO DO GUILHERME (Opcoes 4, 5 e 6)
+ * IMPLEMENTACAO DAS OPCOES 4, 5 e 6
  * ============================================================================
  */
 
@@ -337,45 +341,43 @@ void executar_opcao_6(CategoriaNo *categorias) {
 
 /*
  * ============================================================================
- * ESQUELETOS PARA OS DEMAIS INTEGRANTES POPULAREM
+ * ESQUELETOS DAS DEMAIS OPCOES DO TRABALHO
  * ============================================================================
  */
 
-/* Bloco do Kulik */
 void executar_opcao_1(CategoriaNo *categorias) {
     (void)categorias;
-    printf("\n[OPCAO 1 - KULIK] Listar todas as categorias na ordem constante na lista Categorias.\n");
-    printf("(Espaco reservado para implementacao do colega Kulik)\n");
+    printf("\n[OPCAO 1] Listar todas as categorias na ordem constante na lista Categorias.\n");
+    printf("(Funcionalidade em desenvolvimento)\n");
 }
 
 void executar_opcao_2(CategoriaNo *categorias) {
     (void)categorias;
-    printf("\n[OPCAO 2 - KULIK] Listar todos os alimentos de certa categoria na ordem da lista.\n");
-    printf("(Espaco reservado para implementacao do colega Kulik)\n");
+    printf("\n[OPCAO 2] Listar todos os alimentos de certa categoria na ordem da lista.\n");
+    printf("(Funcionalidade em desenvolvimento)\n");
 }
 
 void executar_opcao_3(CategoriaNo *categorias) {
     (void)categorias;
-    printf("\n[OPCAO 3 - KULIK] Listar alimentos de certa categoria em ordem decrescente de energia (Arvore).\n");
-    printf("(Espaco reservado para implementacao do colega Kulik)\n");
+    printf("\n[OPCAO 3] Listar alimentos de certa categoria em ordem decrescente de energia (Arvore).\n");
+    printf("(Funcionalidade em desenvolvimento)\n");
 }
 
-/* Bloco da Carol */
 void executar_opcao_7(CategoriaNo **categorias) {
     (void)categorias;
-    printf("\n[OPCAO 7 - CAROL] Remover uma categoria de alimentos.\n");
-    printf("(Espaco reservado para implementacao da colega Carol)\n");
+    printf("\n[OPCAO 7] Remover uma categoria de alimentos.\n");
+    printf("(Funcionalidade em desenvolvimento)\n");
 }
 
 void executar_opcao_8(CategoriaNo **categorias) {
     (void)categorias;
-    printf("\n[OPCAO 8 - CAROL] Remover um alimento especifico (atualizando as arvores).\n");
-    printf("(Espaco reservado para implementacao da colega Carol)\n");
+    printf("\n[OPCAO 8] Remover um alimento especifico (atualizando as arvores).\n");
+    printf("(Funcionalidade em desenvolvimento)\n");
 }
 
 void executar_opcao_9(CategoriaNo *categorias, bool *executando) {
     (void)categorias;
-    printf("\n[OPCAO 9 - CAROL] Encerrando o programa e atualizando dados.bin caso necessario...\n");
+    printf("\n[OPCAO 9] Encerrando o programa e gerando versao atualizada de dados.bin caso necessario...\n");
     *executando = false;
 }
 
@@ -385,6 +387,12 @@ void executar_opcao_9(CategoriaNo *categorias, bool *executando) {
  * ============================================================================
  */
 void executar_interface(CategoriaNo **categorias) {
+#ifdef _WIN32
+    /* Configura o terminal do Windows para UTF-8 (Code Page 65001) para exibir acentos corretamente */
+    SetConsoleOutputCP(65001);
+    SetConsoleCP(65001);
+#endif
+
     bool executando = true;
 
     /*
@@ -395,17 +403,17 @@ void executar_interface(CategoriaNo **categorias) {
         printf("\n==============================================================================\n");
         printf("        PAINEL DE CONTROLE - TABELA BRASILEIRA DE ALIMENTOS (P2)             \n");
         printf("==============================================================================\n");
-        printf(" [1] Listar todas as categorias de alimentos [Kulik]\n");
-        printf(" [2] Listar alimentos de uma categoria em ordem alfabetica [Kulik]\n");
-        printf(" [3] Listar alimentos de uma categoria por energia decrescente (Arvore) [Kulik]\n");
+        printf(" [1] Listar todas as categorias de alimentos\n");
+        printf(" [2] Listar alimentos de uma categoria em ordem alfabetica\n");
+        printf(" [3] Listar alimentos de uma categoria por energia decrescente (Arvore)\n");
         printf("------------------------------------------------------------------------------\n");
-        printf(" [4] Listar alimentos de uma categoria por proteina decrescente (Arvore) [Gui]\n");
-        printf(" [5] Filtrar alimentos de uma categoria por faixa de energia (Arvore) [Gui]\n");
-        printf(" [6] Filtrar alimentos de uma categoria por faixa de proteina (Arvore) [Gui]\n");
+        printf(" [4] Listar alimentos de uma categoria por proteina decrescente (Arvore)\n");
+        printf(" [5] Filtrar alimentos de uma categoria por faixa de energia (Arvore)\n");
+        printf(" [6] Filtrar alimentos de uma categoria por faixa de proteina (Arvore)\n");
         printf("------------------------------------------------------------------------------\n");
-        printf(" [7] Remover uma categoria de alimentos [Carol]\n");
-        printf(" [8] Remover um alimento especifico [Carol]\n");
-        printf(" [9] Encerrar o programa [Carol]\n");
+        printf(" [7] Remover uma categoria de alimentos\n");
+        printf(" [8] Remover um alimento especifico\n");
+        printf(" [9] Encerrar o programa\n");
         printf("==============================================================================\n");
         printf("Escolha uma opcao (1 a 9): ");
 
