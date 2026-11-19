@@ -71,3 +71,14 @@ gcc -Wall -Wextra -std=c11 -g3 Back/C/P2/p2.c Back/C/P2/categorias_lista/categor
   - *Corte 2* (49.0s): Explicação do algoritmo de busca por faixa e podas à esquerda/direita (`front.c` linhas 424-455).
   - *Corte 3* (20.2s): Conclusão, função `executar_opcao_6` e complexidade de tempo.
 
+---
+
+## 📦 Pacote Oficial de Entrega (Canvas)
+
+- **Pasta de Entrega Limpa**: `Entrega_Trabalho_RA2/`
+- **Arquivo ZIP Final**: `Trabalho_RA2_Equipe.zip` (35.8 MB) contendo:
+  - Código-fonte completo (`.c` e `.h`) dos programas P1 e P2.
+  - Base de dados (`alimentos.csv` e `dados.bin`).
+  - Vídeo de defesa unificado de todos os membros (`Video_Defesa_Trabalho_RA2.mp4`, 7m47s).
+  - Script facilitador `compilar.bat` e este `README.md`.
+
