@@ -76,9 +76,9 @@ gcc -Wall -Wextra -std=c11 -g3 Back/C/P2/p2.c Back/C/P2/categorias_lista/categor
 ## 📦 Pacote Oficial de Entrega (Canvas)
 
 - **Pasta de Entrega Limpa**: `Entrega_Trabalho_RA2/`
-- **Arquivo ZIP Final**: `Trabalho_RA2_Equipe.zip` (35.8 MB) contendo:
+- **Arquivo ZIP Final**: `Trabalho_RA2_Equipe.zip` (54.0 MB) contendo:
   - Código-fonte completo (`.c` e `.h`) dos programas P1 e P2.
   - Base de dados (`alimentos.csv` e `dados.bin`).
-  - Vídeo de defesa unificado de todos os membros (`Video_Defesa_Trabalho_RA2.mp4`, 7m47s).
+  - Vídeo de defesa unificado e aprimorado em 1080p com nitidez adaptativa e áudio equalizado (`Video_Defesa_Trabalho_RA2.mp4`, 7m47s).
   - Script facilitador `compilar.bat` e este `README.md`.
 
