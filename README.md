@@ -64,7 +64,7 @@ gcc -Wall -Wextra -std=c11 -g3 Back/C/P2/p2.c Back/C/P2/categorias_lista/categor
 
 ## 🎬 Gravação do Vídeo de Defesa Técnica
 
-- **Pasta de Gravações**: `repo_vini/Cortes/`
+- **Pasta de Gravações**: `repo_vini/Cortes/` (mantida localmente e ignorada no Git via `.gitignore`)
 - **Parte do Guilherme**: Explicação da Questão 7 (Tópico 6 — Busca por faixa de proteína na árvore binária com poda de subárvores e complexidade $O(N)$).
 - **Vídeo Unificado**: [video_gui_completo.mp4](file:///c:/Segundo_Cerebro/Faculdade_PUCPR/2º%20Período/Programação%20Imperativa/repo_vini/Cortes/video_gui_completo.mp4) (Duração: 1min 30s | Resolução: 1920x1020 | 60 fps | Áudio AAC estéreo).
   - *Corte 1* (21.3s): Apresentação pessoal e anúncio explícito da Questão 7 + estrutura de dados (`arvore_energia.h` / nós da árvore binária).
